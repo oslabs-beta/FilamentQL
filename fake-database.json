@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "text": "Build GraphQL server",
+      "isCompleted": false
+    },
+    {
+      "id": 2,
+      "text": "Build Frontend App",
+      "isCompleted": true
+    },
+    {
+      "id": 3,
+      "text": "Develop caching system",
+      "isCompleted": false
+    }
+  ]
+}

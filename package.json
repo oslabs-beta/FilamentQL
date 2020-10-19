@@ -4,12 +4,13 @@
   "description": "GraphQL query and caching solution",
   "main": "index.js",
   "scripts": {
-    "dev-server": "nodemon server.js",
+    "client": "webpack-dev-server --hot",
+    "server": "nodemon server/server.js",
     "json-server": "json-server --watch fake-database.json",
-    "start": "node server.js"
+    "dev": "npm run client & npm run server & npm run json-server"
   },
   "keywords": [],
-  "author": "neljson",
+  "author": "nelson, andrew, chan, duy",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.20.0",
@@ -18,10 +19,24 @@
     "graphql": "^15.3.0",
     "graphql-import": "^1.0.2",
     "graphql-tools": "^6.2.4",
-    "json-server": "^0.16.2"
+    "json-server": "^0.16.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.5"
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^5.0.0",
+    "nodemon": "^2.0.5",
+    "sass": "^1.27.0",
+    "sass-loader": "^10.0.3",
+    "style-loader": "^2.0.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   },
   "repository": {
     "type": "git",

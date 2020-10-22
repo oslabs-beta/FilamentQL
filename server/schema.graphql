@@ -3,7 +3,14 @@ type Todo {
   text: String!
   isCompleted: Boolean!
 }
-
 type Query {
   todos: [Todo!]!
+}
+input addTodoInput {
+  id: ID
+  text: String!
+  isCompleted: Boolean
+}
+type Mutation {
+  addTodo(input: String!): Todo
 }

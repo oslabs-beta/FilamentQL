@@ -11,6 +11,7 @@ const TodoList = ({ todos, toggleTodo }) => {
           id={item.id}
           text={item.text}
           isCompleted={item.isCompleted}
+          number={item.number}
           toggleTodo={toggleTodo}
         />
       ))}

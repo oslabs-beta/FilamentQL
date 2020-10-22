@@ -1,51 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
-import data from './data';
+
+import { useFilamentQuery } from '../hooks';
+
+const query = `
+{
+  todos { 
+    id
+    text
+    isCompleted
+  }
+}
+`;
+
+const query2 = `
+{
+  todos {
+    id
+    number
+  }
+}
+`;
+
+/**
+ * What to store? What's the key?
+ * How to store?
+ * How to parse query to get final query?
+ * How to combine new data with cache?
+ */
+
+// const mutation = (text) => `
+// mutation {
+//   addTodo(input: "${text}") {
+//     id
+//     text
+//     isCompleted
+//   }
+// }
+// `;
 
 const App = () => {
-  const [todos, setTodos] = useState(data);
+  const { state, makeQuery } = useFilamentQuery(query, []);
 
-  useEffect(() => {
-    axios
-      .post('/api', {
-        query: `
-        {
-          todos {
-            id
-            text
-            isCompleted
-          }
-        }
-      `,
-      })
-      .then((res) => {
-        setTodos(res.data.data.todos);
-      });
-  }, []);
-
-  const addTodo = (todoText) => {
-    const todo = {
-      id: Math.random(),
-      todoText,
-      isCompleted: false,
-    };
-
-    setTodos([...todos, todo]);
-  };
+  const addTodo = (text) => {};
+  // useFilamentMutation(mutation(text), (result) => setTodos(result));
 
   const toggleTodo = (id) => {
-    const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          isCompleted: !todo.isCompleted,
-        };
-      }
-      return todo;
-    });
+    const newTodos = todos.map((todo) =>
+      todo.id === id
+        ? {
+            ...todo,
+            isCompleted: !todo.isCompleted,
+          }
+        : todo
+    );
 
     setTodos(newTodos);
   };
@@ -53,8 +63,12 @@ const App = () => {
   return (
     <div className="App">
       <h1>Todo App</h1>
+      <button onClick={() => sessionStorage.clear()}>
+        Clear sessionStorage
+      </button>
+      <button onClick={() => makeQuery(query2)}>Fetch numbers</button>
       <AddTodo addTodo={addTodo} />
-      <TodoList todos={todos} toggleTodo={toggleTodo} />
+      <TodoList todos={state.todos || state} toggleTodo={toggleTodo} />
     </div>
   );
 };

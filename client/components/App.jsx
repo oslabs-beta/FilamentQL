@@ -5,6 +5,23 @@ import TodoList from './TodoList';
 
 import { useFilamentQuery } from '../hooks';
 
+/**
+ * What to store? What's the key?
+ * How to store?
+ * How to parse query to get final query?
+ * How to combine new data with cache?
+ */
+
+// mutations for stretch later:
+
+// const mutation = (text) => `
+// mutation {
+//   addTodo(input: "${text}") {
+//     id
+//     text
+//     isCompleted
+//   }
+
 const query = `
 {
   todos { 
@@ -24,24 +41,10 @@ const query2 = `
 }
 `;
 
-/**
- * What to store? What's the key?
- * How to store?
- * How to parse query to get final query?
- * How to combine new data with cache?
- */
-
-// const mutation = (text) => `
-// mutation {
-//   addTodo(input: "${text}") {
-//     id
-//     text
-//     isCompleted
-//   }
-// }
-// `;
-
 const App = () => {
+  // Andrew aglo returns an array which is the query, and
+
+  // return [newQuery, cacheData]
   const { state, makeQuery } = useFilamentQuery(query, []);
 
   const addTodo = (text) => {};
@@ -61,7 +64,7 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div className='App'>
       <h1>Todo App</h1>
       <button onClick={() => sessionStorage.clear()}>
         Clear sessionStorage

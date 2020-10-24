@@ -75,7 +75,7 @@ import axios from 'axios';
 `;
 
 // construct new query
-
+// should return key - "todos"
 const getSessionStorageKey = (query) => {
   const res = query
     .split('\n')

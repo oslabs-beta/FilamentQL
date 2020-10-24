@@ -55,25 +55,25 @@ export const useFilamentQuery = (query, defaultState = null) => {
 
     if (cacheAtKey) {
       const [finalQuery, cacheData] = parseFilamentQuery(query);
-      console.log('finalQuery', finalQuery);
-      console.log('cacheData', cacheData);
+      console.log('makeQuery(), cache found, finalQuery', finalQuery);
+      console.log('makeQuery(), cache found, cacheData', cacheData);
 
       // note: parsing for dissimilarities later
       axios.post('/graphql', { query: finalQuery }).then((res) => {
-        console.log('makeQuery()', res.data.data);
+        console.log('makeQuery(), data from server', res.data.data);
         const cacheAtKeyState = JSON.parse(cacheAtKey);
         // Merge with data from server
         const newState = mergeDataFromCacheAndServer(
           cacheAtKeyState,
           res.data.data[key]
         );
-        console.log(newState);
+        console.log('makeQuery(), cache found, newState', newState);
 
         setState(newState);
         sessionStorage.setItem(key, JSON.stringify(newState));
       });
     } else {
-      console.log('makeQuery(), not found in cache');
+      console.log('makeQuery(), cache not found');
       axios.post('/graphql', { query }).then((res) => {
         setState(res.data.data);
         sessionStorage.setItem(key, JSON.stringify(res.data.data[key]));

@@ -1,121 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useFilamentQuery, mergeDataFromCacheAndServer } from '../hooks';
 import { parseFilamentQuery } from '../hooks/utils';
 import axios from 'axios';
 
+import './Demo.scss';
+
 const query = `
-{
-  todos { 
-    id
-    text
-    isCompleted
+  {
+    todos { 
+      id
+      text
+      completed
+    }
   }
-}
 `;
 
-const query2 = `
-query {
-  todos {
-    id
-    text
-    number
+const queryWantToMake = `
+  query {
+    todos {
+      id
+      text
+      difficulty
+    }
   }
-}
 `;
-
-const query3 = `
-query {
-  todos {
-    id
-    number
-  }
-}
-`;
-
-const cache = {
-  todos: [
-    {
-      id: '1',
-      text: 'Build GraphQL server',
-      isCompleted: false,
-      number: 1,
-    },
-    {
-      id: '2',
-      text: 'Build Frontend App',
-      isCompleted: true,
-      number: 12,
-    },
-    {
-      id: '3',
-      text: 'Develop caching system',
-      isCompleted: false,
-      number: 15,
-    },
-  ],
-};
 
 sessionStorage.clear();
 
 const Demo = () => {
   const { state, makeQuery } = useFilamentQuery(query, []);
-  const [isOpen, setIsOpen] = useState(false);
-  const [dataFromDB, setDataFromDB] = useState('');
+  const [cache, setCache] = useState({ ...sessionStorage });
+  const [dataFromDB, setDataFromDB] = useState(null);
+  const [desiredQuery, setDesiredQuery] = useState('');
+  const [actualQuery, setActualQuery] = useState('');
+  const [fetchingTime, setFetchingTime] = useState(0);
 
-  const addTodo = () => {};
-
-  const toggleTodo = (id) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id
-        ? {
-            ...todo,
-            isCompleted: !todo.isCompleted,
-          }
-        : todo
-    );
-
-    setTodos(newTodos);
-  };
+  useEffect(() => {
+    setCache({ ...sessionStorage });
+  }, [state, dataFromDB, sessionStorage]);
 
   const handleClick = () => {
-    const [finalQuery, dataInCache] = parseFilamentQuery(query2);
-    setIsOpen(!isOpen);
-    axios.post('/graphql', { query: finalQuery }).then((res) => {
+    const [actualQuery, dataInCache] = parseFilamentQuery(desiredQuery);
+    const startTime = performance.now();
+    axios.post('/graphql', { query: actualQuery }).then((res) => {
+      const mergedData = mergeDataFromCacheAndServer(
+        JSON.parse(sessionStorage.getItem('todos')),
+        res.data.data.todos
+      );
+      sessionStorage.setItem('todos', JSON.stringify(mergedData));
+      const endTime = performance.now();
+      setActualQuery(actualQuery);
       setDataFromDB(res.data.data.todos);
+      setFetchingTime(endTime - startTime);
     });
   };
 
-  const displayCode = (cacheString) => {
-    return JSON.stringify(JSON.parse(cacheString), null, 2);
+  const displayCode = (cache) => {
+    const result = typeof cache === 'string' ? JSON.parse(cache) : cache;
+    return JSON.stringify(result, null, 2);
   };
 
   return (
-    <div className="App">
+    <div className="Demo">
       <Link to="/">Dev</Link>
-      <div style={{ display: 'flex' }}>
+      <div className="query-text-container">
         <label>
-          Make a Query
-          <textarea cols="30" rows="10" value={query2}></textarea>
+          <span>Make a Query</span>
+          <textarea
+            cols="30"
+            rows="10"
+            value={desiredQuery}
+            onChange={({ target: { value } }) => setDesiredQuery(value)}
+          />
         </label>
-        <br />
 
         <label>
-          Updated Query
-          <textarea cols="30" rows="10" value={isOpen ? query3 : ''}></textarea>
+          <span>Updated Query</span>
+          <textarea
+            cols="30"
+            rows="10"
+            value={actualQuery}
+            onChange={({ target: { value } }) => setActualQuery(value)}
+          />
         </label>
       </div>
 
-      <div>
+      <div className="data">
         <span>Data in cache</span>
-        <pre>{displayCode(sessionStorage.getItem('todos'))}</pre>
+        <pre>{displayCode(cache.todos || null)}</pre>
       </div>
       <div>
-        <p>Data fetched:</p>
-        <pre>{displayCode(JSON.stringify(dataFromDB))}</pre>
+        <p>Data fetched – Took {fetchingTime.toFixed(2)} ms</p>
+        <pre>{displayCode(dataFromDB)}</pre>
       </div>
       <button onClick={handleClick}>Fetch</button>
+      <button onClick={() => sessionStorage.clear()}>Clear Cache</button>
     </div>
   );
 };

@@ -1,9 +1,10 @@
-const axios = require('axios');
+const Todo = require('./todoModel');
 
 const resolvers = {
   Query: {
-    todos() {
-      return axios.get('http://localhost:3000/todos').then((res) => res.data);
+    async todos() {
+      const todos = await Todo.find({});
+      return todos;
     },
   },
 };

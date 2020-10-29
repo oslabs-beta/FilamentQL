@@ -1,0 +1,14 @@
+.Demo {
+  .query-text-container {
+    display: flex;
+
+    label {
+      display: flex;
+      flex-direction: column;
+
+      span {
+        align-self: center;
+      }
+    }
+  }
+}

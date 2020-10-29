@@ -7,7 +7,7 @@
     "client": "webpack-dev-server --hot",
     "server": "nodemon server/server.js",
     "json-server": "json-server --watch fake-database.json",
-    "dev": "npm run client & npm run server & npm run json-server"
+    "dev": "npm run client & npm run server & npm run json-server & redis-server"
   },
   "keywords": [],
   "author": "nelson, andrew, chan, duy",

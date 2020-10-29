@@ -44,4 +44,6 @@ app.use(
 
 );
 
-app.listen(PORT, () => console.log(`Server is now up and running on ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`GraphQL server is running on port: ${PORT}`)
+);

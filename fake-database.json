@@ -1,114 +1,22 @@
 {
   "todos": [
     {
-      "id": 1,
+      "id": "1",
       "text": "Build GraphQL server",
-      "isCompleted": false
+      "isCompleted": false,
+      "number": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "text": "Build Frontend App",
-      "isCompleted": true
+      "isCompleted": true,
+      "number": 12
     },
     {
-      "id": 3,
+      "id": "3",
       "text": "Develop caching system",
-      "isCompleted": false
-    },
-    {
-      "id": "0.07716752407332694",
-      "text": "asdfasdf",
-      "isCompleted": false
-    },
-    {
-      "id": "0.08168816285055858",
-      "text": "dd",
-      "isCompleted": false
-    },
-    {
-      "id": "0.2598996165473426",
-      "text": "trytrytrytry",
-      "isCompleted": false
-    },
-    {
-      "id": "0.791147069639645",
-      "text": "WILL THIS WORK",
-      "isCompleted": false
-    },
-    {
-      "id": "0.06141513921953412",
-      "text": "try this",
-      "isCompleted": false
-    },
-    {
-      "id": "0.5400715035063846",
-      "text": "aaaa",
-      "isCompleted": false
-    },
-    {
-      "id": "0.09094549698417098",
-      "text": "eeeee",
-      "isCompleted": false
-    },
-    {
-      "id": "0.8198527847112826",
-      "text": "eeeeee",
-      "isCompleted": false
-    },
-    {
-      "id": "0.035118018787860805",
-      "text": "dddd",
-      "isCompleted": false
-    },
-    {
-      "id": "0.6745358013489522",
-      "text": "blaaaaaaaah",
-      "isCompleted": false
-    },
-    {
-      "id": "0.5004092232000112",
-      "text": "another one",
-      "isCompleted": false
-    },
-    {
-      "id": "0.43057765714396057",
-      "text": "first one",
-      "isCompleted": false
-    },
-    {
-      "id": "0.7484919142542854",
-      "text": "ddddd",
-      "isCompleted": false
-    },
-    {
-      "id": "0.5770843121854521",
-      "text": "aaaa",
-      "isCompleted": false
-    },
-    {
-      "id": "0.1621861305763561",
-      "text": "asdfasfd",
-      "isCompleted": false
-    },
-    {
-      "id": "0.5130503501491541",
-      "text": "aaaa",
-      "isCompleted": false
-    },
-    {
-      "id": "0.7678671013887874",
-      "text": "ffff",
-      "isCompleted": false
-    },
-    {
-      "id": "0.27461430209661897",
-      "text": "fffff",
-      "isCompleted": false
-    },
-    {
-      "id": "0.5499687273189422",
-      "text": "asdf",
-      "isCompleted": false
+      "isCompleted": false,
+      "number": 15
     }
   ]
 }

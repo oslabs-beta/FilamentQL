@@ -2,7 +2,7 @@ type Todo {
   id: ID!
   text: String!
   isCompleted: Boolean!
-  number: Int
+  difficulty: Int!
 }
 
 type Query {

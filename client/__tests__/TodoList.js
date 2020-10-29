@@ -1,7 +1,7 @@
 import React from 'react';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import TodoItem from '../TodoItem.jsx';
+import TodoItem from '../components/TodoItem.jsx';
 
 configure({ adapter: new Adapter() });
 

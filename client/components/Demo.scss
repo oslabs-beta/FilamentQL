@@ -1,14 +1,51 @@
+$code-editorBG: #072437;
+$code-text: rgba(255, 255, 255, 0.947);
+
 .Demo {
   .query-text-container {
     display: flex;
+    justify-content: center;
 
     label {
       display: flex;
       flex-direction: column;
 
-      span {
+      h4 {
         align-self: center;
       }
     }
   }
+}
+
+.DB-view {
+  background: $code-editorBG;
+  color: $code-text;
+  width: 400px;
+  height: 30vh;
+  overflow-y: scroll;
+}
+
+.cache-view {
+  background: $code-editorBG;
+  color: $code-text;
+  width: 400px;
+  height: 30vh;
+  overflow-y: scroll;
+}
+
+.fetched-div {
+  h4 {
+    text-align: center;
+  }
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.cache-div {
+  h4 {
+    text-align: center;
+  }
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

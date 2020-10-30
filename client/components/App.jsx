@@ -1,76 +1,18 @@
 import React from 'react';
+import { Switch, Route, Link } from 'react-router-dom';
 
-import AddTodo from './AddTodo';
-import TodoList from './TodoList';
+import Test from './Test';
+import Demo from './Demo';
 
-import { useFilamentQuery } from '../hooks';
+sessionStorage.clear();
 
-const query = `
-{
-  todos { 
-    id
-    text
-    isCompleted
-  }
-}
-`;
-
-const query2 = `
-{
-  todos {
-    id
-    number
-  }
-}
-`;
-
-/**
- * What to store? What's the key?
- * How to store?
- * How to parse query to get final query?
- * How to combine new data with cache?
- */
-
-// const mutation = (text) => `
-// mutation {
-//   addTodo(input: "${text}") {
-//     id
-//     text
-//     isCompleted
-//   }
-// }
-// `;
-
-const App = () => {
-  const { state, makeQuery } = useFilamentQuery(query, []);
-
-  const addTodo = (text) => {};
-  // useFilamentMutation(mutation(text), (result) => setTodos(result));
-
-  const toggleTodo = (id) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id
-        ? {
-            ...todo,
-            isCompleted: !todo.isCompleted,
-          }
-        : todo
-    );
-
-    setTodos(newTodos);
-  };
-
-  return (
-    <div className="App">
-      <h1>Todo App</h1>
-      <button onClick={() => sessionStorage.clear()}>
-        Clear sessionStorage
-      </button>
-      <button onClick={() => makeQuery(query2)}>Fetch numbers</button>
-      <AddTodo addTodo={addTodo} />
-      <TodoList todos={state.todos || state} toggleTodo={toggleTodo} />
-    </div>
-  );
-};
+const App = () => (
+  <div className="App">
+    <Switch>
+      <Route path="/demo" component={Demo} />
+      <Route path="/" component={Test} />
+    </Switch>
+  </div>
+);
 
 export default App;

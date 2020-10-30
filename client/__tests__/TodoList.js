@@ -22,8 +22,13 @@ describe('initial test', () => {
     wrapper = shallow(<TodoItem {...props} />);
   })
 
-  it('should return false', () => {
+  it('should fail the test', () => {
     expect(wrapper.find('button').length).toEqual(3)
+  })
+
+  it('should pass the test', () => {
+    expect(wrapper.find('button').length).toEqual(2)
+
   })
 })
 

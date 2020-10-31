@@ -4,7 +4,7 @@
 const axios = require('axios');
 const resolvers = {
   Query: {
-    todos(_, __, { client, query }) {
+    todos(_, __, { client, req }) {
       try {
         // we have an incoming query
         // we parse the query to find out what it is asking for:
@@ -17,6 +17,7 @@ const resolvers = {
         // // we then need to update the cache with what was returned from the database
         // // ship off the data back to the client
         // console.log(query)
+
         let newID = Math.random().toString();
 
         console.log(query)
@@ -39,28 +40,27 @@ const resolvers = {
     },
   },
   Mutation: {
-    async addTodo(parent, { input }, { client, query }) {
-      try {
-        console.log('QUERY', query)
-        let newTodo = {
-          id: Math.random().toString(),
-          text: input,
-          isCompleted: false,
-        }
-        await client.set(newTodo.id.toString(), JSON.stringify(newTodo))
-        client.get(newTodo.id, (err, cachedData) => {
-          if (err) console.log(err)
-          else console.log(cachedData)
+    async addTodo(parent, { input }, { client, req }) {
 
-        })
-        return axios
-          .post('http://localhost:3000/todos', newTodo)
-          .then((res) => res.data);
+      var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-      } catch (err) {
-        console.log(err)
-        return false;
+
+      console.log('QUERY', req.body.query)
+      let newTodo = {
+        id: Math.random().toString(),
+        text: input,
+        isCompleted: false,
       }
+
+      await client.set(ip, JSON.stringify(newTodo))
+      client.get(newTodo.id, (err, cachedData) => {
+        if (err) console.log(err)
+        else console.log(cachedData)
+
+      })
+      return axios
+        .post('http://localhost:3000/todos', newTodo)
+        .then((res) => res.data);
 
     },
   },

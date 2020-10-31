@@ -33,12 +33,13 @@ client.on('connect', () => {
 //   })
 app.use(
   '/graphql',
+  filamentMiddleware,
   graphqlHTTP((req) => ({
     schema,
     graphiql: true,
     context: {
       client,
-      query: req.body.query
+      req: req
     }
   }))
 

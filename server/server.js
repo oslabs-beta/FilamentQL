@@ -31,9 +31,15 @@ client.on('connect', () => {
 //     graphiql: true,
 //     context: { client }
 //   })
+
+const wrapper = require('./filamentMiddleware')
+
+app.use('/filament',
+  wrapper(client), // filamentMiddleware with access to client
+)
+
 app.use(
   '/graphql',
-  filamentMiddleware,
   graphqlHTTP((req) => ({
     schema,
     graphiql: true,
@@ -41,10 +47,12 @@ app.use(
       client,
       req: req
     }
-  }))
-
+  })),
+  // addToCacheWrapper(res.data)
 );
 
 app.listen(PORT, () =>
   console.log(`GraphQL server is running on port: ${PORT}`)
 );
+
+

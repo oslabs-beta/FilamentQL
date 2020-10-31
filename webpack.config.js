@@ -31,6 +31,9 @@ module.exports = {
     proxy: {
       '/graphql': 'http://localhost:4000/graphql',
     },
+    proxy: {
+      '/filament': 'http://localhost:4000/filament',
+    },
   },
   resolve: {
     extensions: ['.js', '.jsx'],

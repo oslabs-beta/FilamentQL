@@ -4,7 +4,7 @@
 const axios = require('axios');
 const resolvers = {
   Query: {
-    todos(_, __, { client, req }) {
+    async todos(_, __, context) {
       try {
         // we have an incoming query
         // we parse the query to find out what it is asking for:
@@ -18,9 +18,21 @@ const resolvers = {
         // // ship off the data back to the client
         // console.log(query)
 
-        let newID = Math.random().toString();
+        // let newID = Math.random().toString();
 
         console.log(query)
+
+        const todos = await context.models.findMany({})
+
+        // get the data from the database
+
+        // todos
+        res.locals.todos = todos;
+        next()
+
+
+
+
 
         return axios.get('http://localhost:3000/todos').then((res) => {
           client.set(newID, JSON.stringify(res.data), (err, result) => {

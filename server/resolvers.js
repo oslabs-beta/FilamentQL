@@ -1,55 +1,35 @@
-
-
-
 const axios = require('axios');
+const Todo = require('./todoModel');
+
 const resolvers = {
+  // Query: {
+  //   async todos() {
+  //     console.log('hi')
+  //     const todos = await Todo.find({});
+  //     console.log(todos)
+  //     res.send(200).json(todos)
+  //     return todos;
+  //   },
+  // },
   Query: {
-    async todos(_, __, context) {
-      try {
-        // we have an incoming query
-        // we parse the query to find out what it is asking for:
-        // Case 1: if the incoming query is exactly same as a previous query, then return just from cache.\
-        // Case 2: if the incoming query is completely different...
-        // Case 3 (hardest): incoming query is partially different than a previous query:
-        // // we check the cache for the info
-        // // any info that isnt there, we check the database
-        // // if our cache is empty or is misisng info from the database
-        // // we then need to update the cache with what was returned from the database
-        // // ship off the data back to the client
-        // console.log(query)
+    async todos() {
 
-        // let newID = Math.random().toString();
+      const todos = await Todo.find({});
 
-        console.log(query)
+      console.log('data', todos)
+      res.status(200).json(todos)
+    }
 
-        const todos = await context.models.findMany({})
-
-        // get the data from the database
-
-        // todos
-        res.locals.todos = todos;
-        next()
-
-
-
-
-
-        return axios.get('http://localhost:3000/todos').then((res) => {
-          client.set(newID, JSON.stringify(res.data), (err, result) => {
-            if (err) console.log('errored inside of client.set ' + err)
-            console.log('client.set ' + result)
-            // client.get(newID, (err, cachedData) => {
-            //   console.log(cachedData);
-            // })
-          })
-          return res.data;
-        });
-
-      } catch (err) {
-        console.log(err)
-        return false
-      }
-    },
+    // return axios.get('http://localhost:4000/todos').then((res) => {
+    //   client.set(newID, JSON.stringify(res.data), (err, result) => {
+    //     if (err) console.log('errored inside of client.set ' + err)
+    //     console.log('client.set ' + result)
+    //     // client.get(newID, (err, cachedData) => {
+    //     //   console.log(cachedData);
+    //     // })
+    //   })
+    //   return res.data;
+    // });
   },
   Mutation: {
     async addTodo(parent, { input }, { client, req }) {
@@ -71,7 +51,7 @@ const resolvers = {
 
       })
       return axios
-        .post('http://localhost:3000/todos', newTodo)
+        .post('http://localhost:4000/todos', newTodo)
         .then((res) => res.data);
 
     },

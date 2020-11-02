@@ -2,6 +2,7 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const fetch = require("node-fetch");
 const redis = require("redis");
+const Todos = require('./todoModel');
 
 const PORT = process.env.PORT || 4000;
 // const REDIS_PORT = process.env.REDIS_PORT || 6379;
@@ -24,14 +25,6 @@ client.on('connect', () => {
 });
 // pass redis as context so our schema can use Redis methods
 
-// app.use(
-//   '/graphql',
-//   graphqlHTTP({
-//     schema,
-//     graphiql: true,
-//     context: { client }
-//   })
-
 const wrapper = require('./filamentMiddleware')
 
 app.use('/filament',
@@ -45,7 +38,7 @@ app.use(
     graphiql: true,
     context: {
       client,
-      req: req
+      req: req,
     }
   })),
   // addToCacheWrapper(res.data)

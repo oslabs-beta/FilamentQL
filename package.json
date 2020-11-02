@@ -23,12 +23,12 @@
     "graphql-import": "^1.0.2",
     "graphql-tools": "^6.2.4",
     "json-server": "^0.16.2",
-    "node-fetch": "^2.6.1",
-    "redis": "^3.0.2",
     "mongoose": "^5.10.11",
+    "node-fetch": "^2.6.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "redis": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

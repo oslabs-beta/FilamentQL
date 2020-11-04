@@ -1,4 +1,16 @@
-function transformQuery(query) {
+const mergeTwoArraysById = (dataFromCache, dataFromServer) => {
+  const mergedData = dataFromCache.map((dataCache) => {
+    const matchedObj = dataFromServer.find(
+      (dataServer) => dataServer.id === dataCache.id
+    );
+    const newData = { ...dataCache, ...matchedObj };
+    return newData;
+  });
+
+  return mergedData;
+};
+
+const transformQuery = (query) => {
   const parts = query.split(' ')
   const stack = []
   let indentations = 2
@@ -27,4 +39,4 @@ function transformQuery(query) {
   return result
 }
 
-module.exports = transformQuery;
+module.exports = { mergeTwoArraysById, transformQuery };

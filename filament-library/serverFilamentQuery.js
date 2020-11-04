@@ -34,12 +34,15 @@ function serverFilamentQuery(query, cacheObject) {
     // this checks for ending brackets and adds one according to how many needed fields there have been
     // it also finds the next character after placing the closing
     createKeyString()
+    // console.log('keystring', keyString)
+    // console.log('temp cache object', tempCacheObject)
+    // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
 
     if (addClosingBracket()) return true;
 
-
     // advances 'index' until it finds a '{' immediately after finding a field
     findOpeningCurlyBracketAfterField()
+
     // each if/else if logic is deciding where to look for the data, cache or the tempCacheObject
     // temp cache object gets reset and more nested as we find more types within the parent object
     // variableTypeMatch checks for whether we found a place where our variable is used.
@@ -385,6 +388,9 @@ function serverFilamentQuery(query, cacheObject) {
 
   function fieldsInCacheOrNot() {
 
+    // console.log('keystring', keyString)
+    // console.log('temp cache object', tempCacheObject)
+    // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
     if (tempCacheObject[keyString.trim()]) {
       addStoredTypesToReturnedDataFromCache()
 
@@ -413,6 +419,7 @@ function serverFilamentQuery(query, cacheObject) {
       typeNeedsAdding = false
 
     } else if (keyString.trim() !== 'id') {
+      // console.log(keyString.trim())
       newQuery += keyString;
       isMatched = false
       keyString = '';
@@ -428,7 +435,8 @@ function serverFilamentQuery(query, cacheObject) {
           break;
         }
         if (query[index] === '}') {
-          addFieldToQueryString()
+
+          fieldsInCacheOrNot()
           break;
         }
 
@@ -437,7 +445,6 @@ function serverFilamentQuery(query, cacheObject) {
         index += 1;
       }
     }
-
 
   }
 

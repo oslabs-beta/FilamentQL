@@ -1,14 +1,11 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const redis = require("redis");
-const client = redis.createClient();
-const schema = require('./schema');
-const PORT = 4000;
 require('dotenv').config();
 
+// Mongo DB Setup
 const mongoose = require('mongoose');
 const MONGO_URI = process.env.MONGO_URI;
-
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -18,41 +15,32 @@ mongoose
   .then(() => console.log('Connected to Mongo DB'))
   .catch((err) => console.log(err));
 
+// Redis Setup
+const client = redis.createClient();
+client
+  .on("error", err => console.log("Error " + err))
+  .on('connect', () => console.log('Redis client connected'));
 
+// Filament Setup
+const filamentMiddlewareWrapper = require('../filament-library/filamentMiddleware')
+const filamentMiddleware = filamentMiddlewareWrapper(client)
+
+// Express setup
 const app = express()
+const PORT = 4000;
+const schema = require('./schema');
 
 app.use(express.json())
-
-client.on("error", err => {
-  console.log("Error " + err);
-});
-
-client.on('connect', () => {
-  console.log('Redis client connected');
-});
-// pass redis as context so our schema can use Redis methods
-
-const wrapper = require('./filamentMiddleware')
-
-app.use('/filament',
-  wrapper(client), // filamentMiddleware with access to client
-)
-
+app.use('/filament', filamentMiddleware)
 app.use(
   '/graphql',
   graphqlHTTP((req) => ({
     schema,
     graphiql: true,
     context: {
-      client,
-      req: req,
+      req,
     }
   })),
-  // addToCacheWrapper(res.data)
 );
 
-app.listen(PORT, () =>
-  console.log(`GraphQL server is running on port: ${PORT}`)
-);
-
-
+app.listen(PORT, () => console.log(`GraphQL server is on port: ${PORT}`));

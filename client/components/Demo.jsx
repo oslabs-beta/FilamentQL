@@ -46,9 +46,9 @@ const Demo = () => {
 
     const startTime = performance.now();
     // Condition: if data being queried for not in cache, go fetch
-    axios.post('/graphql', { query: actualQuery }).then((res) => {
+    axios.post('/filament', { query: actualQuery }).then((res) => {
       const cacheString = sessionStorage.getItem('todos');
-
+      console.log('res.data.data', res.data.data)
       if (cacheString) {
         const mergedData = mergeDataFromCacheAndServer(
           JSON.parse(sessionStorage.getItem('todos')),

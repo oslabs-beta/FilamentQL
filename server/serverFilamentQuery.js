@@ -30,10 +30,10 @@ function serverFilamentQuery(query, cacheObject) {
     eatWhiteSpace()
     // holds value of the 'key', either it is a Type or a Field
 
-    createKeyString()
+
     // this checks for ending brackets and adds one according to how many needed fields there have been
     // it also finds the next character after placing the closing
-
+    createKeyString()
 
     if (addClosingBracket()) return true;
 
@@ -51,7 +51,6 @@ function serverFilamentQuery(query, cacheObject) {
       // here we know we have to check the tempCacheObject
       // we have already retrieved data from cache
     } else if (query[index] === '{' && bracketCount !== 1 && !variableTypeMatch) {
-      console.log(keyString)
       // checks Temp Cache Object for data, 
       // adds to our query string if it finds none, nests new data if we find an object that matches the keyString
       // we add to types which will affect how many closing '}' we end up adding
@@ -70,7 +69,6 @@ function serverFilamentQuery(query, cacheObject) {
 
     index += 1;
     // if above is true && bracketCount is 1, then we need to ask the cache for that key
-    console.log(newQuery)
     findNextCharacter()
   }
 
@@ -115,7 +113,7 @@ function serverFilamentQuery(query, cacheObject) {
     // if we find a '{' it means we found a query using the different syntax
     while (query[index] !== 'q') {
       if (query[index] === '{') {
-        newQuery += query[index];
+        newQuery += query[index] + ' ';
         index += 1;
         bracketCount += 1;
         return;
@@ -147,7 +145,7 @@ function serverFilamentQuery(query, cacheObject) {
     }
 
     if (query[index] === '{') {
-      newQuery += query[index];
+      newQuery += query[index] + ' ';
       index += 1;
       bracketCount += 1;
     }
@@ -177,15 +175,13 @@ function serverFilamentQuery(query, cacheObject) {
     } else {
       // ??NOT SURE IF THIS MATTERS?????????????????
       totalTypes += 1;
-      newQuery += keyString + '{' + 'id ';;
+      newQuery += keyString + ' {' + ' id ';
       keyString = '';
       bracketCount += 1;
     }
   }
 
   function getFromTCOAndNestNewData() {
-    console.log(keyString)
-    console.log(tempCacheObject[keyString])
     if (tempCacheObject[keyString.trim()] && tempCacheObject[keyString.trim()][0]) {
       tempCacheObject = tempCacheObject[keyString.trim()][0];
       tempTypes.push(keyString)
@@ -195,7 +191,7 @@ function serverFilamentQuery(query, cacheObject) {
 
     } else {
       totalTypes += 1;
-      newQuery += keyString + '{' + 'id ';;
+      newQuery += keyString + ' {' + ' id ';;
       keyString = '';
       bracketCount += 1;
     }
@@ -214,7 +210,7 @@ function serverFilamentQuery(query, cacheObject) {
       // variableTypeMatch = ''
     } else {
       totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + '{' + 'id ';;
+      newQuery += keyString + variableTypeMatch + ' {' + ' id ';;
       // variableTypeMatch = ''
     }
   }
@@ -238,7 +234,7 @@ function serverFilamentQuery(query, cacheObject) {
 
     if (query[index] === '}') {
       if (bracketCount) {
-        newQuery += '}'
+        newQuery += '} '
         // deal with total types, remove, use bracket Count
         totalTypes -= 1;
         // THIS WILL CHANGE !!!!!!!!! GO BACK INTO PREVIOUSLY NESTED OBJECT
@@ -284,7 +280,7 @@ function serverFilamentQuery(query, cacheObject) {
       keyString = ''
     } else {
       totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + '{' + 'id ';;
+      newQuery += keyString + variableTypeMatch + ' {' + ' id ';;
       keyString = ''
 
     }
@@ -301,8 +297,8 @@ function serverFilamentQuery(query, cacheObject) {
 
     if (keyString.trim() === 'id') {
       addFieldToQueryString()
+      keyString = 'id'
     }
-
     let tempCacheData = {};
 
     let currentType = tempTypesForCacheData.shift()
@@ -346,7 +342,6 @@ function serverFilamentQuery(query, cacheObject) {
             })
           }
           let tempData = dataFromCacheArr[i];
-          console.log(cacheDataArr)
           let data = cacheDataArr[i];
 
           if (tempTypesForCacheData.length) {
@@ -365,7 +360,6 @@ function serverFilamentQuery(query, cacheObject) {
           } else {
             data[keyString.trim()] = tempData[keyString.trim()]
             newCacheDataArr.push(data)
-            // console.log(newCacheDataArr)
 
           }
         }
@@ -402,40 +396,39 @@ function serverFilamentQuery(query, cacheObject) {
   function addFieldToQueryString() {
 
 
+
     if (typeNeedsAdding && variableTypeMatch === tempTypes[tempTypes.length - 1]) {
       newQuery += tempTypes[tempTypes.length - 1]
       newQuery += holdVarString
-      newQuery += '{' + 'id ';
+      newQuery += ' {' + ' id ';
       bracketCount += 1;
       totalTypes += 1
       holdVarString = ''
       variableTypeMatch = ''
       typeNeedsAdding = false
     } else if (typeNeedsAdding) {
-      newQuery += tempTypes[tempTypes.length - 1] + '{' + 'id ';
+      newQuery += tempTypes[tempTypes.length - 1] + ' {' + ' id ';
       totalTypes += 1
       bracketCount += 1;
       typeNeedsAdding = false
 
-    }
-
-    if (keyString.trim() !== 'id') {
-      isMatched = false;
-
+    } else if (keyString.trim() !== 'id') {
       newQuery += keyString;
+      isMatched = false
       keyString = '';
     }
-
-    // newQuery += keyString;
-    // keyString = '';
+    keyString = '';
   }
 
   function createKeyString() {
-
     if (query[index].match(charFindRegex)) {
       while (query[index] !== ' ') {
         if (query[index] === '(') {
           parseAndHoldVarLocation()
+          break;
+        }
+        if (query[index] === '}') {
+          addFieldToQueryString()
           break;
         }
 

@@ -1,19 +1,26 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
-const fetch = require("node-fetch");
 const redis = require("redis");
-const Todos = require('./todoModel');
-
-const PORT = process.env.PORT || 4000;
-// const REDIS_PORT = process.env.REDIS_PORT || 6379;
-//Create Redis client on Redis port (optional)
 const client = redis.createClient();
 const schema = require('./schema');
-const bluebird = require('bluebird')
+const PORT = 4000;
+require('dotenv').config();
+
+const mongoose = require('mongoose');
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'Filament',
+  })
+  .then(() => console.log('Connected to Mongo DB'))
+  .catch((err) => console.log(err));
+
+
 const app = express()
 
-// bluebird.promisifyAll(redis.RedisClient.prototype);
-// bluebird.promisifyAll(redis.Multi.prototype);
 app.use(express.json())
 
 client.on("error", err => {

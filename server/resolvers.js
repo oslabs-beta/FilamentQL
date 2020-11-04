@@ -16,8 +16,9 @@ const resolvers = {
 
       const todos = await Todo.find({});
 
-      console.log('data', todos)
-      res.status(200).json(todos)
+      console.log('data:', todos)
+      return todos
+      // res.status(200).json(todos)
     }
 
     // return axios.get('http://localhost:4000/todos').then((res) => {

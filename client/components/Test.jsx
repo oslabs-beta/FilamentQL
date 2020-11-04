@@ -31,15 +31,15 @@ sessionStorage.clear();
 const Test = () => {
   const { state, makeQuery } = useFilamentQuery(query, []);
 
-  const addTodo = () => {};
+  const addTodo = () => { };
 
   const toggleTodo = (id) => {
     const newTodos = state.todos.map((todo) =>
       todo.id === id
         ? {
-            ...todo,
-            isCompleted: !todo.isCompleted,
-          }
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        }
         : todo
     );
 

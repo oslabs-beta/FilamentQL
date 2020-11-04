@@ -41,7 +41,7 @@ export const useFilamentQuery = (query, defaultState = null) => {
       // otherwise, make a axios request
       console.log('not found in cache, go fetch from server');
 
-      axios.post('/graphql', { query }).then((res) => {
+      axios.post('/filament', { query }).then((res) => {
         setState(res.data.data);
         sessionStorage.setItem(key, JSON.stringify(res.data.data[key]));
       });
@@ -59,7 +59,7 @@ export const useFilamentQuery = (query, defaultState = null) => {
       console.log('makeQuery(), cache found, cacheData', cacheData);
 
       // note: parsing for dissimilarities later
-      axios.post('/graphql', { query: finalQuery }).then((res) => {
+      axios.post('/filament', { query: finalQuery }).then((res) => {
         console.log('makeQuery(), data from server', res.data.data);
         const cacheAtKeyState = JSON.parse(cacheAtKey);
         // Merge with data from server
@@ -74,7 +74,7 @@ export const useFilamentQuery = (query, defaultState = null) => {
       });
     } else {
       console.log('makeQuery(), cache not found');
-      axios.post('/graphql', { query }).then((res) => {
+      axios.post('/filament', { query }).then((res) => {
         setState(res.data.data);
         sessionStorage.setItem(key, JSON.stringify(res.data.data[key]));
       });

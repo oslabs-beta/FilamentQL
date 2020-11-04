@@ -1,5 +1,5 @@
 {
-  "name": "Filament",
+  "name": "filament",
   "version": "1.0.0",
   "description": "GraphQL query and caching solution",
   "main": "index.js",
@@ -8,13 +8,14 @@
     "client": "webpack-dev-server --hot",
     "server": "nodemon server/server.js",
     "json-server": "json-server --watch fake-database.json",
-    "dev": "npm run client & npm run server"
+    "dev": "npm run client & npm run server & npm run json-server & redis-server"
   },
   "keywords": [],
   "author": "nelson, andrew, chan, duy",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.20.0",
+    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
@@ -25,7 +26,8 @@
     "mongoose": "^5.10.11",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "redis": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -35,6 +37,7 @@
     "babel-jest": "^26.6.1",
     "babel-loader": "^8.1.0",
     "css-loader": "^5.0.0",
+    "dotenv": "^8.2.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "jest": "^26.6.1",

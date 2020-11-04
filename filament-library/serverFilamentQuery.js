@@ -1,5 +1,4 @@
-
-export function parseFilamentQuery(query) {
+function serverFilamentQuery(query, cacheObject) {
   let index = 0;
   let newQuery = '';
   const cacheData = {};
@@ -18,6 +17,7 @@ export function parseFilamentQuery(query) {
   let searchLimiter = 1;
   let keyString = '';
   let typeNeedsAdding;
+  let isMatched = true;
 
   skipFirstWord();
   findNextCharacter();
@@ -29,19 +29,20 @@ export function parseFilamentQuery(query) {
     // skips any whitespace
     eatWhiteSpace()
     // holds value of the 'key', either it is a Type or a Field
-    console.log(query[index])
 
-    createKeyString()
-    console.log(keyString)
+
     // this checks for ending brackets and adds one according to how many needed fields there have been
     // it also finds the next character after placing the closing
-
+    createKeyString()
+    // console.log('keystring', keyString)
+    // console.log('temp cache object', tempCacheObject)
+    // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
 
     if (addClosingBracket()) return true;
 
-
     // advances 'index' until it finds a '{' immediately after finding a field
     findOpeningCurlyBracketAfterField()
+
     // each if/else if logic is deciding where to look for the data, cache or the tempCacheObject
     // temp cache object gets reset and more nested as we find more types within the parent object
     // variableTypeMatch checks for whether we found a place where our variable is used.
@@ -53,7 +54,6 @@ export function parseFilamentQuery(query) {
       // here we know we have to check the tempCacheObject
       // we have already retrieved data from cache
     } else if (query[index] === '{' && bracketCount !== 1 && !variableTypeMatch) {
-      console.log(keyString)
       // checks Temp Cache Object for data, 
       // adds to our query string if it finds none, nests new data if we find an object that matches the keyString
       // we add to types which will affect how many closing '}' we end up adding
@@ -72,7 +72,6 @@ export function parseFilamentQuery(query) {
 
     index += 1;
     // if above is true && bracketCount is 1, then we need to ask the cache for that key
-    console.log(newQuery)
     findNextCharacter()
   }
 
@@ -167,10 +166,9 @@ export function parseFilamentQuery(query) {
   // if we dont find it, we  know the data isnt there
   // we then add it to our string to retrieve it from our DB
   function getFromCacheOrAddToQuery() {
-    if (sessionStorage.getItem(keyString.trim())) {
+    if (cacheObject[keyString.trim()]) {
 
-      let tempString = sessionStorage.getItem(keyString.trim());
-      tempCacheObject = JSON.parse(tempString)[0]
+      tempCacheObject = cacheObject[keyString.trim()][0];
       // We want to add this key to our  returned cacheObject because if we are looking for it
       // no matter what we want the ID stored there. 
       // no matter what we are adding this property to the final cache Object because we need the ID no matter what
@@ -187,8 +185,6 @@ export function parseFilamentQuery(query) {
   }
 
   function getFromTCOAndNestNewData() {
-    console.log(keyString)
-    console.log(tempCacheObject[keyString])
     if (tempCacheObject[keyString.trim()] && tempCacheObject[keyString.trim()][0]) {
       tempCacheObject = tempCacheObject[keyString.trim()][0];
       tempTypes.push(keyString)
@@ -272,10 +268,8 @@ export function parseFilamentQuery(query) {
     index += 1;
   }
   function filterCachePropertyByVariable() {
-    if (sessionStorage.getItem(keyString.trim())) {
-      let tempString = sessionStorage.getItem(keyString.trim())
-
-      variableAffectedArray = JSON.parse(tempString)
+    if (cacheObject[keyString.trim()]) {
+      variableAffectedArray = cacheObject[keyString.trim()]
       let variableKey = Object.keys(inputObject)
 
       let tempArray = variableAffectedArray.filter(obj => {
@@ -308,14 +302,11 @@ export function parseFilamentQuery(query) {
       addFieldToQueryString()
       keyString = 'id'
     }
-    console.log(keyString)
     let tempCacheData = {};
 
     let currentType = tempTypesForCacheData.shift()
 
-    let tempTypeString = sessionStorage.getItem(currentType)
-
-    tempCacheData[currentType] = JSON.parse(tempTypeString)
+    tempCacheData[currentType] = cacheObject[currentType]
 
     let dataFromCacheArr = tempCacheData[currentType]
 
@@ -354,7 +345,6 @@ export function parseFilamentQuery(query) {
             })
           }
           let tempData = dataFromCacheArr[i];
-          console.log(cacheDataArr)
           let data = cacheDataArr[i];
 
           if (tempTypesForCacheData.length) {
@@ -373,7 +363,6 @@ export function parseFilamentQuery(query) {
           } else {
             data[keyString.trim()] = tempData[keyString.trim()]
             newCacheDataArr.push(data)
-            // console.log(newCacheDataArr)
 
           }
         }
@@ -399,6 +388,9 @@ export function parseFilamentQuery(query) {
 
   function fieldsInCacheOrNot() {
 
+    // console.log('keystring', keyString)
+    // console.log('temp cache object', tempCacheObject)
+    // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
     if (tempCacheObject[keyString.trim()]) {
       addStoredTypesToReturnedDataFromCache()
 
@@ -427,11 +419,11 @@ export function parseFilamentQuery(query) {
       typeNeedsAdding = false
 
     } else if (keyString.trim() !== 'id') {
-      console.log(keyString)
+      // console.log(keyString.trim())
       newQuery += keyString;
+      isMatched = false
       keyString = '';
     }
-
     keyString = '';
   }
 
@@ -442,6 +434,11 @@ export function parseFilamentQuery(query) {
           parseAndHoldVarLocation()
           break;
         }
+        if (query[index] === '}') {
+
+          fieldsInCacheOrNot()
+          break;
+        }
 
         keyString += query[index];
 
@@ -449,9 +446,9 @@ export function parseFilamentQuery(query) {
       }
     }
 
-
   }
 
-  return [newQuery, cacheData];
+  return [newQuery, cacheData, isMatched];
 };
 
+module.exports = serverFilamentQuery

@@ -5,6 +5,7 @@ import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 
 import { useFilamentQuery } from '../hooks';
+import { parseKeyInCache } from '../hooks/utils'
 
 const query = `
   {
@@ -30,11 +31,11 @@ sessionStorage.clear();
 
 const Test = () => {
   const { state, makeQuery } = useFilamentQuery(query, []);
-
+  const keyInCache = parseKeyInCache(query)
   const addTodo = () => { };
 
   const toggleTodo = (id) => {
-    const newTodos = state.todos.map((todo) =>
+    const newTodos = state[keyInCache].map((todo) =>
       todo.id === id
         ? {
           ...todo,
@@ -55,7 +56,7 @@ const Test = () => {
       </button>
       <button onClick={() => makeQuery(query2)}>Fetch numbers</button>
       <AddTodo addTodo={addTodo} />
-      <TodoList todos={state.todos || state} toggleTodo={toggleTodo} />
+      <TodoList todos={state[keyInCache] || state} toggleTodo={toggleTodo} />
     </div>
   );
 };

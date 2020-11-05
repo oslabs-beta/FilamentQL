@@ -7,8 +7,8 @@ const serverFilamentQuery = require('./serverFilamentQuery')
 
 const wrapper = (client) => async (req, res, next) => {
   const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const { query } = req.body
-
+  const { query, keyInCache } = req.body
+  console.log('KEY IN CACHE', keyInCache)
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache
     console.log('redisCacheAtIP: ', redisCacheAtIP)
@@ -17,7 +17,7 @@ const wrapper = (client) => async (req, res, next) => {
         const resFromGraphQL = await axiosGraphQL.post({ query })
 
         client.set(clientIP, JSON.stringify({
-          todos: resFromGraphQL.data.data['todos']
+          [keyInCache]: resFromGraphQL.data.data[keyInCache]
         }), (err, redisCacheAtIPAfterWrite) => {
           console.log('redisCacheAtIP after write', redisCacheAtIPAfterWrite)
         })
@@ -41,16 +41,16 @@ const wrapper = (client) => async (req, res, next) => {
     // isMatched === false
     try {
       const response = axiosGraphQL.post({ query: parsedQuery })
-      const resTodos = mergeTwoArraysById(data.todos, response.data.data.todos);
+      const resTodos = mergeTwoArraysById(data[keyInCache], response.data.data[keyInCache]);
       // set the new data in Redis
-      const cacheTodos = mergeTwoArraysById(JSON.parse(redisCacheAtIP).todos, response.data.data.todos)
+      const cacheTodos = mergeTwoArraysById(JSON.parse(redisCacheAtIP)[keyInCache], response.data.data[keyInCache])
 
       client.set(clientIP, JSON.stringify({
-        todos: cacheTodos
+        [keyInCache]: cacheTodos
       }))
 
       const dataSendToClient = {
-        todos: resTodos
+        [keyInCache]: resTodos
       }
 
       return res.status(200).json({ data: dataSendToClient })

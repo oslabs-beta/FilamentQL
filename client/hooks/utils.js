@@ -11,12 +11,12 @@ export function parseFilamentQuery(query) {
   let tempCacheObject = {};
   let totalTypes = 0;
   const charFindRegex = /[a-zA-Z]/;
+  let keyString = '';
   let inputObject = '';
   let holdVarString = '';
   let variableTypeMatch = ''
   let variableAffectedArray = null;
   let searchLimiter = 1;
-  let keyString = '';
   let typeNeedsAdding;
 
   skipFirstWord();
@@ -46,6 +46,7 @@ export function parseFilamentQuery(query) {
     // temp cache object gets reset and more nested as we find more types within the parent object
     // variableTypeMatch checks for whether we found a place where our variable is used.
     if (query[index] === '{' && bracketCount === 1 && !variableTypeMatch) {
+
       // if we find our 'keyString' in the cache, we retrieve that object
       // if we dont find it, we  know the data isnt there
       // we then add it to our string to retrieve it from our DB
@@ -455,3 +456,70 @@ export function parseFilamentQuery(query) {
   return [newQuery, cacheData];
 };
 
+
+export function parseKeyInCache(query) {
+  let keyInCache = ''
+  let index = 0;
+  const charFindRegex = /[a-zA-Z]/;
+  let keyString = '';
+  let keyWithinCache = 'keyString;'
+
+
+  skipFirstWord();
+  eatWhiteSpace()
+  createKeyString()
+
+  keyWithinCache = keyString;
+  return keyWithinCache;
+
+  function createKeyString() {
+    if (query[index].match(charFindRegex)) {
+      while (query[index] !== ' ') {
+        if (query[index] === '(') {
+          parseAndHoldVarLocation()
+          break;
+        }
+
+        keyString += query[index];
+
+        index += 1;
+      }
+    }
+
+
+  }
+
+  function eatWhiteSpace() {
+    // query[index] starts out on a space or linebreak
+    while (query[index] === ' ' || query[index] === '\n') {
+      index += 1;
+    }
+    // next query[index] will be a character
+  }
+
+  function skipFirstWord() {
+    // looks for a 'q', which will mean that we found the word 'query'
+    // if we find a '{' it means we found a query using the different syntax
+    while (query[index] !== 'q') {
+      if (query[index] === '{') {
+        index += 1;
+        return;
+      }
+      index += 1;
+    }
+
+
+
+    // parse the word 'query'
+    while (query[index] !== ' ') {
+      index += 1;
+    }
+    index += 1
+
+
+    if (query[index] === '{') {
+      index += 1;
+    }
+  }
+
+}

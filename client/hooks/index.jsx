@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { parseFilamentQuery } from './utils';
+import { parseFilamentQuery, parseKeyInCache } from './utils';
 
 const getSessionStorageKey = (query) => {
   const res = query
@@ -27,6 +27,7 @@ export const mergeDataFromCacheAndServer = (dataFromCache, dataFromServer) => {
 
 export const useFilamentQuery = (query, defaultState = null) => {
   const [state, setState] = useState(defaultState);
+  const keyInCache = parseKeyInCache(query)
 
   useEffect(() => {
     const key = getSessionStorageKey(query); // todos
@@ -41,7 +42,7 @@ export const useFilamentQuery = (query, defaultState = null) => {
       // otherwise, make a axios request
       console.log('not found in cache, go fetch from server');
 
-      axios.post('/filament', { query }).then((res) => {
+      axios.post('/filament', { query, keyInCache }).then((res) => {
         setState(res.data.data);
         sessionStorage.setItem(key, JSON.stringify(res.data.data[key]));
       });
@@ -59,7 +60,7 @@ export const useFilamentQuery = (query, defaultState = null) => {
       console.log('makeQuery(), cache found, cacheData', cacheData);
 
       // note: parsing for dissimilarities later
-      axios.post('/filament', { query: finalQuery }).then((res) => {
+      axios.post('/filament', { query: finalQuery, keyInCache }).then((res) => {
         console.log('makeQuery(), data from server', res.data.data);
         const cacheAtKeyState = JSON.parse(cacheAtKey);
         // Merge with data from server

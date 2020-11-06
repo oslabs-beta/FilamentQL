@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { mergeDataFromCacheAndServer } from '../hooks';
-import { parseFilamentQuery } from '../hooks/utils';
+import { parseFilamentQuery, parseKeyInCache } from '../hooks/utils';
 import axios from 'axios';
 
 import './Demo.scss';
@@ -34,6 +34,8 @@ const Demo = () => {
   const [desiredQuery, setDesiredQuery] = useState('');
   const [actualQuery, setActualQuery] = useState('');
   const [fetchingTime, setFetchingTime] = useState(0);
+  const keyInCache = parseKeyInCache(query)
+
 
   useEffect(() => {
     setCache({ ...sessionStorage });
@@ -42,26 +44,27 @@ const Demo = () => {
   const handleClick = () => {
     const [actualQuery, dataInCache] = parseFilamentQuery(desiredQuery);
     console.log('dataInCache', dataInCache);
+    console.log('KEY IN CACHE:', keyInCache)
     setActualQuery(actualQuery);
 
     const startTime = performance.now();
     // Condition: if data being queried for not in cache, go fetch
-    axios.post('/filament', { query: actualQuery }).then((res) => {
-      const cacheString = sessionStorage.getItem('todos');
+    axios.post('/filament', { query: actualQuery, keyInCache }).then((res) => {
+      const cacheString = sessionStorage.getItem(keyInCache);
       console.log('res.data.data', res.data.data)
       if (cacheString) {
         const mergedData = mergeDataFromCacheAndServer(
-          JSON.parse(sessionStorage.getItem('todos')),
-          res.data.data.todos
+          JSON.parse(sessionStorage.getItem(keyInCache)),
+          res.data.data[keyInCache]
         );
 
-        sessionStorage.setItem('todos', JSON.stringify(mergedData));
+        sessionStorage.setItem(keyInCache, JSON.stringify(mergedData));
       } else {
-        sessionStorage.setItem('todos', JSON.stringify(res.data.data.todos));
+        sessionStorage.setItem(keyInCache, JSON.stringify(res.data.data[keyInCache]));
       }
 
       const endTime = performance.now();
-      setDataFromDB(res.data.data.todos);
+      setDataFromDB(res.data.data[keyInCache]);
       setFetchingTime((endTime - startTime).toFixed(2));
     });
     // Else, if data is in cache, set endtime
@@ -124,7 +127,7 @@ const Demo = () => {
             <h4>Data in cache</h4>
             <div className="cache-view">
               <pre>
-                <code>{displayCode(cache.todos || null)}</code>
+                <code>{displayCode(cache[keyInCache] || null)}</code>
               </pre>
             </div>
           </div>

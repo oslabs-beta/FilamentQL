@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
-import { mergeDataFromCacheAndServer } from '../hooks';
-import { parseFilamentQuery, parseKeyInCache } from '../hooks/utils';
 import axios from 'axios';
+
+import { mergeTwoArraysById, parseKeyInCache } from '../../filament/utils';
+import parseClientFilamentQuery from '../../filament/parseClientFilamentQuery';
 
 import './Demo.scss';
 
@@ -31,36 +31,38 @@ sessionStorage.clear();
 const Demo = () => {
   const [cache, setCache] = useState({ ...sessionStorage });
   const [dataFromDB, setDataFromDB] = useState(null);
-  const [desiredQuery, setDesiredQuery] = useState('');
+  const [desiredQuery, setDesiredQuery] = useState(query);
   const [actualQuery, setActualQuery] = useState('');
   const [fetchingTime, setFetchingTime] = useState(0);
-  const keyInCache = parseKeyInCache(query)
-
+  const keyInCache = parseKeyInCache(query);
 
   useEffect(() => {
     setCache({ ...sessionStorage });
   }, [dataFromDB, sessionStorage]);
 
   const handleClick = () => {
-    const [actualQuery, dataInCache] = parseFilamentQuery(desiredQuery);
+    const [actualQuery, dataInCache] = parseClientFilamentQuery(desiredQuery);
     console.log('dataInCache', dataInCache);
-    console.log('KEY IN CACHE:', keyInCache)
+    console.log('KEY IN CACHE:', keyInCache);
     setActualQuery(actualQuery);
 
     const startTime = performance.now();
     // Condition: if data being queried for not in cache, go fetch
     axios.post('/filament', { query: actualQuery, keyInCache }).then((res) => {
       const cacheString = sessionStorage.getItem(keyInCache);
-      console.log('res.data.data', res.data.data)
+      console.log('res.data.data', res.data.data);
       if (cacheString) {
-        const mergedData = mergeDataFromCacheAndServer(
+        const mergedData = mergeTwoArraysById(
           JSON.parse(sessionStorage.getItem(keyInCache)),
           res.data.data[keyInCache]
         );
 
         sessionStorage.setItem(keyInCache, JSON.stringify(mergedData));
       } else {
-        sessionStorage.setItem(keyInCache, JSON.stringify(res.data.data[keyInCache]));
+        sessionStorage.setItem(
+          keyInCache,
+          JSON.stringify(res.data.data[keyInCache])
+        );
       }
 
       const endTime = performance.now();

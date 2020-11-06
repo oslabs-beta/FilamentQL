@@ -1,18 +1,18 @@
-function serverFilamentQuery(query, cacheObject) {
+const serverFilamentQuery = (query, cacheObject) => {
   let index = 0;
   let newQuery = '';
   const cacheData = {};
   let current = cacheData;
   let bracketCount = 0;
-  const tempTypes = []
+  const tempTypes = [];
   let variableForFilter;
-  const tempTypesForCacheData = []
+  const tempTypesForCacheData = [];
   let tempCacheObject = {};
   let totalTypes = 0;
   const charFindRegex = /[a-zA-Z]/;
   let inputObject = '';
   let holdVarString = '';
-  let variableTypeMatch = ''
+  let variableTypeMatch = '';
   let variableAffectedArray = null;
   let searchLimiter = 1;
   let keyString = '';
@@ -27,13 +27,12 @@ function serverFilamentQuery(query, cacheObject) {
     // base case
     if (bracketCount === 0) return;
     // skips any whitespace
-    eatWhiteSpace()
+    eatWhiteSpace();
     // holds value of the 'key', either it is a Type or a Field
-
 
     // this checks for ending brackets and adds one according to how many needed fields there have been
     // it also finds the next character after placing the closing
-    createKeyString()
+    createKeyString();
     // console.log('keystring', keyString)
     // console.log('temp cache object', tempCacheObject)
     // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
@@ -41,7 +40,7 @@ function serverFilamentQuery(query, cacheObject) {
     if (addClosingBracket()) return true;
 
     // advances 'index' until it finds a '{' immediately after finding a field
-    findOpeningCurlyBracketAfterField()
+    findOpeningCurlyBracketAfterField();
 
     // each if/else if logic is deciding where to look for the data, cache or the tempCacheObject
     // temp cache object gets reset and more nested as we find more types within the parent object
@@ -50,57 +49,67 @@ function serverFilamentQuery(query, cacheObject) {
       // if we find our 'keyString' in the cache, we retrieve that object
       // if we dont find it, we  know the data isnt there
       // we then add it to our string to retrieve it from our DB
-      getFromCacheOrAddToQuery()
+      getFromCacheOrAddToQuery();
       // here we know we have to check the tempCacheObject
       // we have already retrieved data from cache
-    } else if (query[index] === '{' && bracketCount !== 1 && !variableTypeMatch) {
-      // checks Temp Cache Object for data, 
+    } else if (
+      query[index] === '{' &&
+      bracketCount !== 1 &&
+      !variableTypeMatch
+    ) {
+      // checks Temp Cache Object for data,
       // adds to our query string if it finds none, nests new data if we find an object that matches the keyString
       // we add to types which will affect how many closing '}' we end up adding
-      getFromTCOAndNestNewData()
-    } else if (query[index] === '{' && bracketCount === 1 && variableTypeMatch) {
+      getFromTCOAndNestNewData();
+    } else if (
+      query[index] === '{' &&
+      bracketCount === 1 &&
+      variableTypeMatch
+    ) {
       // filter the cache property object using the variable
-      filterCachePropertyByVariable()
-    } else if (query[index] === '{' && bracketCount !== 1 && variableTypeMatch) {
+      filterCachePropertyByVariable();
+    } else if (
+      query[index] === '{' &&
+      bracketCount !== 1 &&
+      variableTypeMatch
+    ) {
       // filter the tempCacheObjet by the variable
-      filterTCOPropertyByVariable()
+      filterTCOPropertyByVariable();
     } else if (keyString) {
       // we have found a field, check if tempCacheObject has that property
       // if either our cache or tempCacheObject contian our field
-      fieldsInCacheOrNot()
+      fieldsInCacheOrNot();
     }
 
     index += 1;
     // if above is true && bracketCount is 1, then we need to ask the cache for that key
-    findNextCharacter()
+    findNextCharacter();
   }
-
 
   function parseVariable() {
     while (query[index] !== '{') {
-      newQuery += query[index]
+      newQuery += query[index];
       index += 1;
     }
 
     while (query[index] !== '}') {
-      inputObject += query[index]
-      newQuery += query[index]
+      inputObject += query[index];
+      newQuery += query[index];
       index += 1;
     }
 
-    inputObject += query[index]
-    newQuery += query[index]
-    inputObject = JSON.parse(inputObject)
+    inputObject += query[index];
+    newQuery += query[index];
+    inputObject = JSON.parse(inputObject);
 
     while (query[index] !== ')') {
-      newQuery += query[index]
+      newQuery += query[index];
       index += 1;
     }
 
-    newQuery += query[index]
+    newQuery += query[index];
 
     index += 2;
-
   }
 
   function parseName() {
@@ -109,7 +118,6 @@ function serverFilamentQuery(query, cacheObject) {
       index += 1;
     }
   }
-
 
   function skipFirstWord() {
     // looks for a 'q', which will mean that we found the word 'query'
@@ -124,26 +132,22 @@ function serverFilamentQuery(query, cacheObject) {
       index += 1;
     }
 
-
-
     // parse the word 'query'
     while (query[index] !== ' ') {
       newQuery += query[index];
       index += 1;
     }
-    newQuery += query[index]
-    index += 1
-
+    newQuery += query[index];
+    index += 1;
 
     //  parse either the name and or the variable
     if (query[index].match(charFindRegex)) {
-      parseName()
+      parseName();
 
       if (query[index] === ' ') {
         index += 1;
       } else {
-        parseVariable()
-
+        parseVariable();
       }
     }
 
@@ -167,13 +171,12 @@ function serverFilamentQuery(query, cacheObject) {
   // we then add it to our string to retrieve it from our DB
   function getFromCacheOrAddToQuery() {
     if (cacheObject[keyString.trim()]) {
-
       tempCacheObject = cacheObject[keyString.trim()][0];
       // We want to add this key to our  returned cacheObject because if we are looking for it
-      // no matter what we want the ID stored there. 
+      // no matter what we want the ID stored there.
       // no matter what we are adding this property to the final cache Object because we need the ID no matter what
-      tempTypes.push(keyString)
-      typeNeedsAdding = true
+      tempTypes.push(keyString);
+      typeNeedsAdding = true;
       keyString = '';
     } else {
       // ??NOT SURE IF THIS MATTERS?????????????????
@@ -185,16 +188,18 @@ function serverFilamentQuery(query, cacheObject) {
   }
 
   function getFromTCOAndNestNewData() {
-    if (tempCacheObject[keyString.trim()] && tempCacheObject[keyString.trim()][0]) {
+    if (
+      tempCacheObject[keyString.trim()] &&
+      tempCacheObject[keyString.trim()][0]
+    ) {
       tempCacheObject = tempCacheObject[keyString.trim()][0];
-      tempTypes.push(keyString)
-      typeNeedsAdding = true
+      tempTypes.push(keyString);
+      typeNeedsAdding = true;
 
       keyString = '';
-
     } else {
       totalTypes += 1;
-      newQuery += keyString + ' {' + ' id ';;
+      newQuery += keyString + ' {' + ' id ';
       keyString = '';
       bracketCount += 1;
     }
@@ -202,18 +207,18 @@ function serverFilamentQuery(query, cacheObject) {
 
   function filterTCOPropertyByVariable() {
     if (tempCacheObject[variableTypeMatch.trim()]) {
-      tempTypes.push(variableTypeMatch)
+      tempTypes.push(variableTypeMatch);
       typeNeedsAdding = true;
-      variableAffectedObject = tempCacheObject[variableTypeMatch.trim()]
-      let variableKey = Object.keys(inputObject)
-      tempArray = variableAffectedObject.filter(obj => {
-        return obj[variableKey[0]] === inputObject[variableKey[0]]
-      })
-      tempCacheObject = tempArray[0]
+      variableAffectedObject = tempCacheObject[variableTypeMatch.trim()];
+      let variableKey = Object.keys(inputObject);
+      tempArray = variableAffectedObject.filter((obj) => {
+        return obj[variableKey[0]] === inputObject[variableKey[0]];
+      });
+      tempCacheObject = tempArray[0];
       // variableTypeMatch = ''
     } else {
       totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + ' {' + ' id ';;
+      newQuery += keyString + variableTypeMatch + ' {' + ' id ';
       // variableTypeMatch = ''
     }
   }
@@ -226,27 +231,25 @@ function serverFilamentQuery(query, cacheObject) {
       searchLimiter -= 1;
     }
     searchLimiter = 1;
-
   }
 
   function addClosingBracket() {
     // here we add an ending bracket to the queryString
-    // we check the number of totalTypes 
+    // we check the number of totalTypes
     // this makes sure we aren't adding a bracket for a Type that we have removed
     // find the next character
 
     if (query[index] === '}') {
       if (bracketCount) {
-        newQuery += '} '
+        newQuery += '} ';
         // deal with total types, remove, use bracket Count
         totalTypes -= 1;
         // THIS WILL CHANGE !!!!!!!!! GO BACK INTO PREVIOUSLY NESTED OBJECT
-        tempCacheObject = {}
+        tempCacheObject = {};
         bracketCount -= 1;
       }
 
       if (bracketCount === 0) {
-
         return true;
       }
 
@@ -261,117 +264,124 @@ function serverFilamentQuery(query, cacheObject) {
 
     while (query[index] !== ')') {
       holdVarString += query[index];
-      index += 1
+      index += 1;
     }
 
-    holdVarString += query[index]
+    holdVarString += query[index];
     index += 1;
   }
   function filterCachePropertyByVariable() {
     if (cacheObject[keyString.trim()]) {
-      variableAffectedArray = cacheObject[keyString.trim()]
-      let variableKey = Object.keys(inputObject)
+      variableAffectedArray = cacheObject[keyString.trim()];
+      let variableKey = Object.keys(inputObject);
 
-      let tempArray = variableAffectedArray.filter(obj => {
-        return obj[variableKey[0]] === inputObject[variableKey[0]]
-      })
+      let tempArray = variableAffectedArray.filter((obj) => {
+        return obj[variableKey[0]] === inputObject[variableKey[0]];
+      });
 
-      tempCacheObject = tempArray[0]
-      tempTypes.push(variableTypeMatch)
+      tempCacheObject = tempArray[0];
+      tempTypes.push(variableTypeMatch);
       typeNeedsAdding = true;
 
-      keyString = ''
+      keyString = '';
     } else {
       totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + ' {' + ' id ';;
-      keyString = ''
-
+      newQuery += keyString + variableTypeMatch + ' {' + ' id ';
+      keyString = '';
     }
   }
 
   function addStoredTypesToReturnedDataFromCache() {
-    tempTypes.forEach(type => {
-      tempTypesForCacheData.push(type.trim())
-    })
-    addTypes()
+    tempTypes.forEach((type) => {
+      tempTypesForCacheData.push(type.trim());
+    });
+    addTypes();
   }
 
   function addTypes() {
-
     if (keyString.trim() === 'id') {
-      addFieldToQueryString()
-      keyString = 'id'
+      addFieldToQueryString();
+      keyString = 'id';
     }
     let tempCacheData = {};
 
-    let currentType = tempTypesForCacheData.shift()
+    let currentType = tempTypesForCacheData.shift();
 
-    tempCacheData[currentType] = cacheObject[currentType]
+    tempCacheData[currentType] = cacheObject[currentType];
 
-    let dataFromCacheArr = tempCacheData[currentType]
+    let dataFromCacheArr = tempCacheData[currentType];
 
     if (!tempTypesForCacheData.length) {
       if (variableForFilter && variableForFilter === currentType) {
-        let variableKey = Object.keys(inputObject)
+        let variableKey = Object.keys(inputObject);
 
-        dataFromCacheArr = dataFromCacheArr.filter(obj => {
-          return obj[variableKey[0]] === inputObject[variableKey[0]]
-        })
+        dataFromCacheArr = dataFromCacheArr.filter((obj) => {
+          return obj[variableKey[0]] === inputObject[variableKey[0]];
+        });
       }
 
       if (!cacheData[currentType]) {
-        cacheData[currentType] = Array.from({ length: dataFromCacheArr.length }, i => i = {})
-        let cacheDataArr = cacheData[currentType]
-        current = addFields(currentType, dataFromCacheArr, cacheDataArr)
+        cacheData[currentType] = Array.from(
+          { length: dataFromCacheArr.length },
+          (i) => (i = {})
+        );
+        let cacheDataArr = cacheData[currentType];
+        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
       } else {
         let cacheDataArr = current;
-        current = addFields(currentType, dataFromCacheArr, cacheDataArr)
+        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
       }
-
-
     } else {
       const cacheDataArr = current;
-      current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr)
+      current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr);
 
       function addNestedFields(currentType, dataFromCacheArr, cacheDataArr) {
         const newCacheDataArr = [];
 
         for (let i = 0; i < dataFromCacheArr.length; i += 1) {
           if (variableForFilter && variableForFilter === currentType) {
-            let variableKey = Object.keys(inputObject)
+            let variableKey = Object.keys(inputObject);
 
-            dataFromCacheArr = dataFromCacheArr.filter(obj => {
-              return obj[variableKey[0]] === inputObject[variableKey[0]]
-            })
+            dataFromCacheArr = dataFromCacheArr.filter((obj) => {
+              return obj[variableKey[0]] === inputObject[variableKey[0]];
+            });
           }
           let tempData = dataFromCacheArr[i];
           let data = cacheDataArr[i];
 
           if (tempTypesForCacheData.length) {
-            currentType = tempTypesForCacheData.shift()
+            currentType = tempTypesForCacheData.shift();
             if (data[currentType]) {
-              const returnedArr = addNestedFields(currentType, tempData[currentType], data[currentType])
-              newCacheDataArr.push(returnedArr)
-              tempTypesForCacheData.unshift(currentType)
+              const returnedArr = addNestedFields(
+                currentType,
+                tempData[currentType],
+                data[currentType]
+              );
+              newCacheDataArr.push(returnedArr);
+              tempTypesForCacheData.unshift(currentType);
             } else {
-              data[currentType] = Array.from({ length: dataFromCacheArr.length }, i => i = {})
-              const returnedArr = addNestedFields(currentType, tempData[currentType], data[currentType])
-              newCacheDataArr.push(returnedArr)
-              tempTypesForCacheData.unshift(currentType)
+              data[currentType] = Array.from(
+                { length: dataFromCacheArr.length },
+                (i) => (i = {})
+              );
+              const returnedArr = addNestedFields(
+                currentType,
+                tempData[currentType],
+                data[currentType]
+              );
+              newCacheDataArr.push(returnedArr);
+              tempTypesForCacheData.unshift(currentType);
             }
-
           } else {
-            data[keyString.trim()] = tempData[keyString.trim()]
-            newCacheDataArr.push(data)
-
+            data[keyString.trim()] = tempData[keyString.trim()];
+            newCacheDataArr.push(data);
           }
         }
-        return newCacheDataArr
+        return newCacheDataArr;
       }
     }
-    keyString = ''
+    keyString = '';
   }
-
 
   function addFields(currentType, dataFromCacheArr, cacheDataArr) {
     const newCacheDataArr = [];
@@ -379,49 +389,46 @@ function serverFilamentQuery(query, cacheObject) {
       let tempData = dataFromCacheArr[i];
       let data = cacheDataArr[i];
 
-      data[keyString.trim()] = tempData[keyString.trim()]
-      newCacheDataArr.push(data)
+      data[keyString.trim()] = tempData[keyString.trim()];
+      newCacheDataArr.push(data);
     }
     cacheData[currentType] = newCacheDataArr;
-    return newCacheDataArr
+    return newCacheDataArr;
   }
 
   function fieldsInCacheOrNot() {
-
     // console.log('keystring', keyString)
     // console.log('temp cache object', tempCacheObject)
     // console.log('is keystring in the tco', tempCacheObject[keyString.trim()])
     if (tempCacheObject[keyString.trim()]) {
-      addStoredTypesToReturnedDataFromCache()
-
+      addStoredTypesToReturnedDataFromCache();
     } else if (!tempCacheObject[keyString.trim()]) {
-      addFieldToQueryString()
+      addFieldToQueryString();
     }
   }
 
   function addFieldToQueryString() {
-
-
-
-    if (typeNeedsAdding && variableTypeMatch === tempTypes[tempTypes.length - 1]) {
-      newQuery += tempTypes[tempTypes.length - 1]
-      newQuery += holdVarString
+    if (
+      typeNeedsAdding &&
+      variableTypeMatch === tempTypes[tempTypes.length - 1]
+    ) {
+      newQuery += tempTypes[tempTypes.length - 1];
+      newQuery += holdVarString;
       newQuery += ' {' + ' id ';
       bracketCount += 1;
-      totalTypes += 1
-      holdVarString = ''
-      variableTypeMatch = ''
-      typeNeedsAdding = false
+      totalTypes += 1;
+      holdVarString = '';
+      variableTypeMatch = '';
+      typeNeedsAdding = false;
     } else if (typeNeedsAdding) {
       newQuery += tempTypes[tempTypes.length - 1] + ' {' + ' id ';
-      totalTypes += 1
+      totalTypes += 1;
       bracketCount += 1;
-      typeNeedsAdding = false
-
+      typeNeedsAdding = false;
     } else if (keyString.trim() !== 'id') {
       // console.log(keyString.trim())
       newQuery += keyString;
-      isMatched = false
+      isMatched = false;
       keyString = '';
     }
     keyString = '';
@@ -431,12 +438,11 @@ function serverFilamentQuery(query, cacheObject) {
     if (query[index].match(charFindRegex)) {
       while (query[index] !== ' ') {
         if (query[index] === '(') {
-          parseAndHoldVarLocation()
+          parseAndHoldVarLocation();
           break;
         }
         if (query[index] === '}') {
-
-          fieldsInCacheOrNot()
+          fieldsInCacheOrNot();
           break;
         }
 
@@ -445,10 +451,9 @@ function serverFilamentQuery(query, cacheObject) {
         index += 1;
       }
     }
-
   }
 
   return [newQuery, cacheData, isMatched];
 };
 
-module.exports = serverFilamentQuery
+export default serverFilamentQuery;

@@ -4,16 +4,6 @@ import OfflineList from './DisplayOfflineList'
 import AddOfflineItem from './AddOfflineItem'
 import axios from 'axios'
 
-const query = `
-  {
-    todos { 
-      id
-      text
-      isCompleted
-    }
-  }
-`;
-
 
 
 
@@ -29,7 +19,17 @@ const Offline = () => {
 
   useEffect(() => {
     // set all the todos that come from the database.
-    axios.post('/filament', { query })
+    const query = `
+          {
+            todos { 
+              id
+              text
+              isCompleted
+            }
+          }
+          `;
+
+    axios.post('/graphql', { query })
       .then((res) => {
         setTodos(res.data.data.todos);
       })
@@ -42,22 +42,45 @@ const Offline = () => {
 
   const handleAddClick = (e) => {
     e.preventDefault();
-    const newTodo = {
-      input: value
-    }
 
-    axios.post('/filament', newTodo)
+    const query = `
+    mutation {
+      addTodo(input: { text: "${value}" }){
+        id
+        text
+      }
+    }
+      `
+    axios.post('/graphql', { query })
       .then(res => {
-        console.log(res.data)
-        // setTodos(todos.concat(res.data.data));)
+        console.log(res.data.data.addTodo)
+        setTodos(todos.concat(res.data.data.addTodo))
       })
 
     // setValue('');
   }
 
   const handleDeleteClick = (id) => {
-    const filteredTodos = todos.filter(item => item.id !== id)
-    setTodos(filteredTodos);
+    console.log(id)
+    const query = `
+      mutation {
+        deleteTodo(input: {id:"${id}"}) {
+          id
+        }
+      }
+    `
+
+    axios.post('/graphql', { query })
+      .then(res => {
+        console.log(res)
+        const filteredTodos = todos.filter(item => {
+          item.id !== id
+
+        })
+        setTodos(filteredTodos);
+      })
+
+
   }
   const handleUpdateClick = (text) => {
     setRequiresUpdate(text);
@@ -78,14 +101,15 @@ const Offline = () => {
         console.log(id)
         const query = `
                 mutation {
-                  updateTodo(input: $input){
+                  updateTodo(input: { id: "${id}" , text: "${text}" }){
                     id
-                   }
+                    text
                   }
+                }
                   `
-        axios.post('/filament', { query, variables: { input: { text, id } } })
+        axios.post('/graphql', { query })
           .then(res => {
-            console.log(res.data.data)
+            console.log(res.data.data.updateTodo.text)
             setTodos(todos)
           })
         setWantsUpdate(false);

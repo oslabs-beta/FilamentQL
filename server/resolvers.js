@@ -9,29 +9,46 @@ const resolvers = {
     }
   },
   Mutation: {
-    addTodo(_, { input }) {
-      const newTodo = {
-        id: Math.random().toString(),
-        text: input,
-        isCompleted: false,
+    async addTodo(_, { input }) {
+      try {
+        const { text } = input;
+        const newTodo = {
+          id: Math.random().toString(),
+          text: text,
+          isCompleted: false,
+          difficulty: 5
+        }
+
+        const createdTodo = await Todo.create(newTodo)
+        console.log(createdTodo)
+        return createdTodo
+      } catch (err) {
+        console.log(err)
       }
 
-      return axios
-        .post('http://localhost:4000/todos', newTodo)
-        .then((res) => res.data);
+
     },
     async updateTodo(_, { input }) {
       try {
         const { id, text } = input;
-
+        // console.log(input)
         const updatedTodo = await Todo.findByIdAndUpdate(id, { text }, { new: true })
-        res.status(200).json(updatedTodo)
+        return updatedTodo
         // return axios
         //   .post('http://localhost:4000/todos', updatedTodo)
         //   .then((res) => console.log(res.data))
       } catch (err) {
         console.log(err)
-        res.status(401).send(err);
+      }
+    },
+    async deleteTodo(_, { input }) {
+      try {
+        const { id } = input;
+        console.log('ID:', id)
+        const deletedTodo = await Todo.findByIdAndDelete(id)
+        return deletedTodo
+      } catch (err) {
+        console.log(err)
       }
     }
   },

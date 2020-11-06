@@ -17,10 +17,12 @@ input updateTodoInput {
   id: ID!
   text: String!
 }
-type Mutation {
-  addTodo(input: String!): Todo
-  updateTodo(input: String!): Todo
-  deleteTodo(input: String!): Todo
+
+input deleteTodoInput {
+  id: ID!
 }
-
-
+type Mutation {
+  addTodo(input: addTodoInput!): Todo
+  updateTodo(input: updateTodoInput!): Todo
+  deleteTodo(input: deleteTodoInput!): Todo
+}

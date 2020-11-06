@@ -12,6 +12,15 @@ input addTodoInput {
   text: String!
   isCompleted: Boolean
 }
+
+input updateTodoInput {
+  id: ID!
+  text: String!
+}
 type Mutation {
   addTodo(input: String!): Todo
+  updateTodo(input: String!): Todo
+  deleteTodo(input: String!): Todo
 }
+
+

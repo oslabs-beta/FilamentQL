@@ -8,6 +8,7 @@ const serverFilamentQuery = require('./serverFilamentQuery')
 const wrapper = (client) => async (req, res, next) => {
   const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const { query, keyInCache } = req.body
+  console.log(query)
   console.log('KEY IN CACHE', keyInCache)
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache

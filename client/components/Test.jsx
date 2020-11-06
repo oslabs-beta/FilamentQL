@@ -50,6 +50,7 @@ const Test = () => {
   return (
     <div className="App">
       <Link to="/demo">Demo</Link>
+      <Link to="/offline">Offline</Link>
       <h1>Todo App</h1>
       <button onClick={() => sessionStorage.clear()}>
         Clear sessionStorage

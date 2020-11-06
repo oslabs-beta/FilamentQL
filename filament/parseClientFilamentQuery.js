@@ -1,4 +1,4 @@
-function parseClientFilamentQuery(query) {
+const parseClientFilamentQuery = (query) => {
   let index = 0;
   let newQuery = '';
   const cacheData = {};
@@ -456,6 +456,6 @@ function parseClientFilamentQuery(query) {
   }
 
   return [newQuery, cacheData];
-}
+};
 
-module.exports = parseClientFilamentQuery;
+export default parseClientFilamentQuery;

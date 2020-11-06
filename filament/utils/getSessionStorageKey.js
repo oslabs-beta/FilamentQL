@@ -8,4 +8,4 @@ const getSessionStorageKey = (query) => {
   return key;
 };
 
-module.exports = getSessionStorageKey;
+export default getSessionStorageKey;

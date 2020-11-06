@@ -10,4 +10,4 @@ const mergeTwoArraysById = (dataFromCache, dataFromServer) => {
   return mergedData;
 };
 
-module.exports = mergeTwoArraysById;
+export default mergeTwoArraysById;

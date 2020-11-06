@@ -58,4 +58,4 @@ function parseKeyInCache(query) {
   }
 }
 
-module.exports = parseKeyInCache;
+export default parseKeyInCache;

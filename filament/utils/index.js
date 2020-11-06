@@ -1,9 +1,9 @@
-const mergeTwoArraysById = require('./mergeTwoArraysById');
-const transformQuery = require('./transformQuery');
-const parseKeyInCache = require('./parseKeyInCache');
-const getSessionStorageKey = require('./getSessionStorageKey');
+import mergeTwoArraysById from './mergeTwoArraysById';
+import transformQuery from './transformQuery';
+import parseKeyInCache from './parseKeyInCache';
+import getSessionStorageKey from './getSessionStorageKey';
 
-module.exports = {
+export {
   mergeTwoArraysById,
   transformQuery,
   parseKeyInCache,

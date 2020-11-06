@@ -27,4 +27,4 @@ const transformQuery = (query) => {
   return result;
 };
 
-module.exports = transformQuery;
+export default transformQuery;

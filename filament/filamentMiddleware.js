@@ -1,67 +1,83 @@
-const axios = require('axios')
+const axios = require('axios');
 
-const BASE_URL = 'http://localhost:4000/graphql'
-
-const { mergeTwoArraysById, transformQuery } = require('./utils')
-const serverFilamentQuery = require('./serverFilamentQuery')
+const { GRAPHQL_ROUTE } = require('./constants');
+const { mergeTwoArraysById, transformQuery } = require('./utils');
+const parseServerFilamentQuery = require('./parseServerFilamentQuery');
 
 const wrapper = (client) => async (req, res, next) => {
-  const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  const { query, keyInCache } = req.body
-  console.log('KEY IN CACHE', keyInCache)
+  const clientIP =
+    req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const { query, keyInCache } = req.body;
+  console.log('KEY IN CACHE', keyInCache);
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache
-    console.log('redisCacheAtIP: ', redisCacheAtIP)
+    console.log('redisCacheAtIP: ', redisCacheAtIP);
     if (!redisCacheAtIP) {
       try {
-        const resFromGraphQL = await axios.post(BASE_URL, { query })
+        const resFromGraphQL = await axios.post(GRAPHQL_ROUTE, { query });
 
-        client.set(clientIP, JSON.stringify({
-          [keyInCache]: resFromGraphQL.data.data[keyInCache]
-        }), (err, redisCacheAtIPAfterWrite) => {
-          console.log('redisCacheAtIP after write', redisCacheAtIPAfterWrite)
-        })
+        client.set(
+          clientIP,
+          JSON.stringify({
+            [keyInCache]: resFromGraphQL.data.data[keyInCache],
+          }),
+          (err, redisCacheAtIPAfterWrite) => {
+            console.log('redisCacheAtIP after write', redisCacheAtIPAfterWrite);
+          }
+        );
 
-        const { data } = resFromGraphQL.data
+        const { data } = resFromGraphQL.data;
 
-        return res.status(200).json({ data })
+        return res.status(200).json({ data });
       } catch (err) {
-        console.log('error', err)
+        console.log('error', err);
       }
-      return
+      return;
     }
 
     // clientIP found in cache
-    const redisCacheParsed = JSON.parse(redisCacheAtIP)
-    const transformedQuery = transformQuery(query)
-    const [parsedQuery, dataInRedisCache, isMatched] = serverFilamentQuery(transformedQuery, redisCacheParsed)
+    const redisCacheParsed = JSON.parse(redisCacheAtIP);
+    const transformedQuery = transformQuery(query);
+    const [parsedQuery, dataInRedisCache, isMatched] = parseServerFilamentQuery(
+      transformedQuery,
+      redisCacheParsed
+    );
 
-    if (isMatched) return res.status(200).json({ data: dataInRedisCache })
+    if (isMatched) return res.status(200).json({ data: dataInRedisCache });
 
     // isMatched === false
     try {
-      const response = await axios.post(BASE_URL, { query: parsedQuery })
-      console.log('response', response)
-      const resTodos = mergeTwoArraysById(dataInRedisCache[keyInCache], response.data.data[keyInCache]);
+      const response = await axios.post(GRAPHQL_ROUTE, { query: parsedQuery });
+      // console.log('response', response);
+      const resTodos = mergeTwoArraysById(
+        dataInRedisCache[keyInCache],
+        response.data.data[keyInCache]
+      );
       // set the new data in Redis
-      const cacheTodos = mergeTwoArraysById(JSON.parse(redisCacheAtIP)[keyInCache], response.data.data[keyInCache])
+      const cacheTodos = mergeTwoArraysById(
+        JSON.parse(redisCacheAtIP)[keyInCache],
+        response.data.data[keyInCache]
+      );
 
-      client.set(clientIP, JSON.stringify({
-        [keyInCache]: cacheTodos
-      }))
+      client.set(
+        clientIP,
+        JSON.stringify({
+          [keyInCache]: cacheTodos,
+        })
+      );
 
       const dataSendToClient = {
-        [keyInCache]: resTodos
-      }
+        [keyInCache]: resTodos,
+      };
 
-      return res.status(200).json({ data: dataSendToClient })
+      return res.status(200).json({ data: dataSendToClient });
     } catch (err) {
-      console.log('has there been an error????,', err)
+      console.log('has there been an error????,', err);
     }
-  })
-}
+  });
+};
 
-module.exports = wrapper
+module.exports = wrapper;
 
 // const axios = require('axios')
 // const serverFilamentQuery = require('./serverFilamentQuery')
@@ -95,7 +111,6 @@ module.exports = wrapper
 //           console.log('error', err)
 //         })
 //     }
-
 
 //     // clientIP found in cache
 //     // console.log('clientIP found in cache')
@@ -131,6 +146,5 @@ module.exports = wrapper
 //   // instead of sessionStorage we access client.get, access 'redisCacheAtIP' as an object
 //   // add a boolean to check whether we have a perfect match or not
 // }
-
 
 // module.exports = wrapper

@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 
-import { useFilamentQuery } from '../hooks';
-import { parseKeyInCache } from '../hooks/utils'
+import { useFilamentQuery } from '../../filament/hooks';
+import { parseKeyInCache } from '../../filament/utils';
 
 const query = `
   {
@@ -31,16 +31,16 @@ sessionStorage.clear();
 
 const Test = () => {
   const { state, makeQuery } = useFilamentQuery(query, []);
-  const keyInCache = parseKeyInCache(query)
-  const addTodo = () => { };
+  const keyInCache = parseKeyInCache(query);
+  const addTodo = () => {};
 
   const toggleTodo = (id) => {
     const newTodos = state[keyInCache].map((todo) =>
       todo.id === id
         ? {
-          ...todo,
-          isCompleted: !todo.isCompleted,
-        }
+            ...todo,
+            isCompleted: !todo.isCompleted,
+          }
         : todo
     );
 

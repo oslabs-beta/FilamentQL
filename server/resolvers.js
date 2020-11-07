@@ -5,26 +5,16 @@ const resolvers = {
   Query: {
     async todos() {
       const todos = await Todo.find({});
-      return todos
-    }
+      return todos;
+    },
   },
   Mutation: {
-    async addTodo(_, { input }) {
-      try {
-        const { text } = input;
-        const newTodo = {
-          id: Math.random().toString(),
-          text: text,
-          isCompleted: false,
-          difficulty: 5
-        }
-
-        const createdTodo = await Todo.create(newTodo)
-        console.log(createdTodo)
-        return createdTodo
-      } catch (err) {
-        console.log(err)
-      }
+    async addTodo(parent, { input }, context) {
+      const newTodo = {
+        id: Math.random().toString(),
+        text: input,
+        isCompleted: false,
+      };
 
 
     },

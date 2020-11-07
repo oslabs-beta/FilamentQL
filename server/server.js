@@ -1,6 +1,6 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
-const redis = require("redis");
+const redis = require('redis');
 require('dotenv').config();
 
 // Mongo DB Setup
@@ -18,20 +18,20 @@ mongoose
 // Redis Setup
 const client = redis.createClient();
 client
-  .on("error", err => console.log("Error " + err))
+  .on('error', (err) => console.log('Error ' + err))
   .on('connect', () => console.log('Redis client connected'));
 
 // Filament Setup
-const filamentMiddlewareWrapper = require('../filament-library/filamentMiddleware')
-const filamentMiddleware = filamentMiddlewareWrapper(client)
+const filamentMiddlewareWrapper = require('../filament/filamentMiddleware');
+const filamentMiddleware = filamentMiddlewareWrapper(client);
 
 // Express setup
-const app = express()
+const app = express();
 const PORT = 4000;
 const schema = require('./schema');
 
-app.use(express.json())
-app.use('/filament', filamentMiddleware)
+app.use(express.json());
+app.use('/filament', filamentMiddleware);
 app.use(
   '/graphql',
   graphqlHTTP((req) => ({
@@ -39,8 +39,8 @@ app.use(
     graphiql: true,
     context: {
       req,
-    }
-  })),
+    },
+  }))
 );
 
 app.listen(PORT, () => console.log(`GraphQL server is on port: ${PORT}`));

@@ -55,6 +55,7 @@ const Offline = () => {
       .then(res => {
         console.log(res.data.data.addTodo)
         setTodos(todos.concat(res.data.data.addTodo))
+        setValue('')
       })
 
     // setValue('');
@@ -73,10 +74,12 @@ const Offline = () => {
     axios.post('/graphql', { query })
       .then(res => {
         console.log(res)
+        console.log(todos)
         const filteredTodos = todos.filter(item => {
-          item.id !== id
-
+          console.log(item)
+          return item.id !== id
         })
+        console.log(filteredTodos)
         setTodos(filteredTodos);
       })
 

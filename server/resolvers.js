@@ -10,13 +10,19 @@ const resolvers = {
   },
   Mutation: {
     async addTodo(parent, { input }, context) {
-      const newTodo = {
-        id: Math.random().toString(),
-        text: input,
-        isCompleted: false,
-      };
+      try {
+        const newTodo = {
+          id: Math.random().toString(),
+          text: input.text,
+          isCompleted: false,
+          difficulty: 99
+        };
 
-
+        const addedTodo = await Todo.create(newTodo)
+        return addedTodo
+      } catch (err) {
+        console.log(err)
+      }
     },
     async updateTodo(_, { input }) {
       try {

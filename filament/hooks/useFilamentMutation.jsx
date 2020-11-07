@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { FILAMENT_ROUTE } from '../constants';
+import { GRAPHQL_ROUTE_FROM_CLIENT } from '../constants';
 
 const uniqueId = () => '_' + Math.random().toString(36).substr(2, 9);
 
-const useFilamentMutation = (mutation) => {
+const useFilamentMutation = (mutation, callback) => {
   const [state, setState] = useState(null);
   const [offlineQueue, setOfflineQueue] = useState([]);
   const useMutationId = uniqueId();
 
+  // Run callback provided when `useFilamentMutation` is called
+  useEffect(() => {
+    if (state && callback) callback();
+  }, [state]);
+
   // Run once
   useEffect(() => {
-    const offlineQueue = sessionStorage.getItem('offlineQueue');
+    let offlineQueue = sessionStorage.getItem('offlineQueue');
     let offlineIntervalId = sessionStorage.getItem('offlineIntervalId');
 
-    if (!offlineQueue)
-      sessionStorage.setItem('offlineQueue', JSON.stringify([]));
-    else setOfflineQueue(JSON.parse(offlineQueue));
+    if (!offlineQueue) {
+      sessionStorage.setItem('offlineQueue', '[]');
+      offlineQueue = [];
+    } else setOfflineQueue(JSON.parse(offlineQueue));
 
     if (!offlineIntervalId) {
       offlineIntervalId = setInterval(() => {
@@ -59,10 +65,12 @@ const useFilamentMutation = (mutation) => {
     return () => clearInterval(offlineIntervalId);
   }, []);
 
-  const makeMutation = async () => {
+  const makeMutation = async (...args) => {
     // online
     if (navigator.onLine) {
-      const response = await axios.post(FILAMENT_ROUTE, { query: mutation });
+      const response = await axios.post(GRAPHQL_ROUTE_FROM_CLIENT, {
+        query: mutation(...args),
+      });
       setState(response.data.data);
       return;
     }

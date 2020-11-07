@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-import { GRAPHQL_ROUTE } from './constants';
+import { GRAPHQL_ROUTE_FROM_SERVER } from './constants';
 import { mergeTwoArraysById, transformQuery } from './utils';
 import parseServerFilamentQuery from './parseServerFilamentQuery';
 
@@ -14,7 +14,9 @@ const wrapper = (client) => async (req, res, next) => {
     console.log('redisCacheAtIP: ', redisCacheAtIP);
     if (!redisCacheAtIP) {
       try {
-        const resFromGraphQL = await axios.post(GRAPHQL_ROUTE, { query });
+        const resFromGraphQL = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
+          query,
+        });
 
         client.set(
           clientIP,
@@ -47,7 +49,9 @@ const wrapper = (client) => async (req, res, next) => {
 
     // isMatched === false
     try {
-      const response = await axios.post(GRAPHQL_ROUTE, { query: parsedQuery });
+      const response = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
+        query: parsedQuery,
+      });
       // console.log('response', response);
       const resTodos = mergeTwoArraysById(
         dataInRedisCache[keyInCache],

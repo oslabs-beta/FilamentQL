@@ -1,152 +1,100 @@
 import React, { useState, useEffect } from 'react';
-import UpdateForm from './UpdateForm'
-import OfflineList from './DisplayOfflineList'
-import AddOfflineItem from './AddOfflineItem'
-import axios from 'axios'
+import axios from 'axios';
 
+import { useFilamentMutation } from '../../filament/hooks';
 
+import {
+  getTodosQuery,
+  addTodoMutation,
+  deleteTodoMutation,
+  updateTodoMutation,
+} from '../query';
 
-
+import UpdateForm from './UpdateForm';
+import OfflineList from './DisplayOfflineList';
+import AddOfflineItem from './AddOfflineItem';
 
 const Offline = () => {
-  const [updated, setUpdated] = useState('')
-  const [requiresUpdate, setRequiresUpdate] = useState('')
-  const [wantsUpdate, setWantsUpdate] = useState(false)
+  const [updatedText, setUpdated] = useState('');
+  const [todoIdToUpdate, setTodoIdToUpdate] = useState(null);
+  const [wantsUpdate, setWantsUpdate] = useState(false);
   const [value, setValue] = useState('');
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState([]);
 
+  const [
+    callAddTodoMutation,
+    addTodoResponse,
+  ] = useFilamentMutation(addTodoMutation, () =>
+    setTodos([...todos, addTodoResponse.addTodo])
+  );
+  const [callDeleteTodoMutation] = useFilamentMutation(deleteTodoMutation);
+  const [callUpdateTodoMutation] = useFilamentMutation(updateTodoMutation);
 
-
+  // ComponentDidMount | fetch all todos from database
   useEffect(() => {
-    // set all the todos that come from the database.
-    const query = `
-          {
-            todos { 
-              id
-              text
-              isCompleted
-            }
-          }
-          `;
+    axios
+      .post('/graphql', { query: getTodosQuery })
+      .then((response) => setTodos(response.data.data.todos));
+  }, []);
 
-    axios.post('/graphql', { query })
-      .then((res) => {
-        setTodos(res.data.data.todos);
-      })
-  }, [])
+  const handleAddChange = (e) => setValue(e.target.value);
 
-  const handleAddChange = (e) => {
-    const newValue = e.target.value
-    setValue(newValue);
-  }
+  const handleAddClick = () => {
+    if (!value) return;
+    callAddTodoMutation(value);
+    setValue('');
+  };
 
-  const handleAddClick = (e) => {
-    e.preventDefault();
+  const handleDeleteClick = async (id) => {
+    callDeleteTodoMutation(id);
+    const filteredTodos = todos.filter((item) => item.id !== id);
+    setTodos(filteredTodos);
+  };
 
-    const query = `
-    mutation {
-      addTodo(input: { text: "${value}" }){
-        id
-        text
-      }
-    }
-      `
-    axios.post('/graphql', { query })
-      .then(res => {
-        console.log(res.data.data.addTodo)
-        setTodos(todos.concat(res.data.data.addTodo))
-        setValue('')
-      })
-
-    // setValue('');
-  }
-
-  const handleDeleteClick = (id) => {
-    console.log(id)
-    const query = `
-      mutation {
-        deleteTodo(input: {id:"${id}"}) {
-          id
-        }
-      }
-    `
-
-    axios.post('/graphql', { query })
-      .then(res => {
-        console.log(res)
-        console.log(todos)
-        const filteredTodos = todos.filter(item => {
-          console.log(item)
-          return item.id !== id
-        })
-        console.log(filteredTodos)
-        setTodos(filteredTodos);
-      })
-
-
-  }
-  const handleUpdateClick = (text) => {
-    setRequiresUpdate(text);
-    setUpdated(text)
+  const handleUpdateClick = (id, text) => {
     setWantsUpdate(true);
-  }
+    setTodoIdToUpdate(id);
+    setUpdated(text);
+  };
 
-  const handleUpdateChange = (e) => {
-    setUpdated(e.target.value)
-  }
+  const handleUpdateChange = (e) => setUpdated(e.target.value);
 
-  const handleUpdateSubmit = (e) => {
-    e.preventDefault();
-    for (let i = 0; i < todos.length; i++) {
-      if (todos[i].text === requiresUpdate) {
-        todos[i].text = updated;
-        const { text, id } = todos[i]
-        console.log(id)
-        const query = `
-                mutation {
-                  updateTodo(input: { id: "${id}" , text: "${text}" }){
-                    id
-                    text
-                  }
-                }
-                  `
-        axios.post('/graphql', { query })
-          .then(res => {
-            console.log(res.data.data.updateTodo.text)
-            setTodos(todos)
-          })
-        setWantsUpdate(false);
-        break;
-      }
-    }
+  const handleUpdateSubmit = async () => {
+    callUpdateTodoMutation(todoIdToUpdate, updatedText);
 
-  }
+    const updatedTodos = todos.map((todo) =>
+      todo.id === todoIdToUpdate ? { ...todo, text: updatedText } : todo
+    );
+
+    setTodos(updatedTodos);
+    setWantsUpdate(false);
+    setTodoIdToUpdate(null);
+  };
 
   return (
     <div>
-      <h1>
-        Online mode
-    </h1>
+      <h1>Online mode</h1>
       <AddOfflineItem
         handleAddClick={handleAddClick}
         value={value}
         handleAddChange={handleAddChange}
       />
-      {
-        wantsUpdate &&
+
+      {wantsUpdate && (
         <UpdateForm
           handleUpdateSubmit={handleUpdateSubmit}
-          updated={updated}
+          updatedText={updatedText}
           handleUpdateChange={handleUpdateChange}
         />
-      }
+      )}
+
       <OfflineList
         todos={todos}
         handleDeleteClick={handleDeleteClick}
         handleUpdateClick={handleUpdateClick}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Offline; 
+export default Offline;

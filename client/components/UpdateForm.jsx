@@ -1,12 +1,23 @@
 import React from 'react';
 
-const UpdateForm = ({ handleUpdateSubmit, updated, handleUpdateChange }) => {
+const UpdateForm = ({
+  handleUpdateSubmit,
+  updatedText,
+  handleUpdateChange,
+}) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleUpdateSubmit();
+  };
+
   return (
     <div>
-      <button onClick={handleUpdateSubmit}>submit change</button>
-      <input type="text" value={updated} onChange={handleUpdateChange} />
+      <form onSubmit={handleSubmit}>
+        <button type="submit">submit change</button>
+        <input type="text" value={updatedText} onChange={handleUpdateChange} />
+      </form>
     </div>
-  )
-}
+  );
+};
 
 export default UpdateForm;

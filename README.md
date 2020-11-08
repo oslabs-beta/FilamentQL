@@ -4,8 +4,14 @@
 
 Filament is an easy and practical server and client-side caching library for graphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
 
+Insert PNG Diagram here...(will add later using creately.com)
+
+### Contributors
+
 Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
 [Duy Nguyen](https://github.com/bobdeei), [Andrew Lovato](https://github.com/andrew-lovato), [Chan Choi](https://github.com/chanychoi93) and [Nelson Wu](https://github.com/neljson).
+
+An interactive demo and more information can be found at [Filament.io](https://www.google.com/)
 
 ## Installation
 
@@ -35,10 +41,29 @@ Install the NPM package from your terminal: `npm install filament placeholder...
 2. Placeholder text
 3. For example, an Express server file may look like this:
 
-   ```
-   placeholder code
+```
+const express = require('express');
+const myGraphQLSchema = require('./schema/schema');
+const Filament  = require('filament')
 
-   ```
+const app = express();
+
+// does user need to instantiate a new redis server at 6379 our will it be done automatically for them when our npm is installed?
+
+app.use(express.json());
+
+app.use('/graphql',
+    Filament,
+    (req, res) => {
+    return res
+        .status(200)
+        .send(res.locals.queryResponse);
+    }
+);
+
+app.listen(3000);
+
+```
 
 4. Placeholder text
 

@@ -29,6 +29,7 @@ module.exports = {
   devServer: {
     publicPath: '/build',
     proxy: {
+      '/filament': 'http://localhost:4000/filament',
       '/graphql': 'http://localhost:4000/graphql',
     },
   },

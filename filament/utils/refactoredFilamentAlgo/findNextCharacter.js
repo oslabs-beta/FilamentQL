@@ -215,6 +215,19 @@ function addTypesAndFieldsToCacheObject(tempTypesForCacheData, keyString) {
   return keyString;
 }
 
+function addFields(currentType, dataFromCacheArr, cacheDataArr) {
+  const newCacheDataArr = [];
+  for (let i = 0; i < dataFromCacheArr.length; i += 1) {
+    let tempData = dataFromCacheArr[i];
+    let data = cacheDataArr[i];
+
+    data[keyString.trim()] = tempData[keyString.trim()];
+    newCacheDataArr.push(data);
+  }
+  cacheData[currentType] = newCacheDataArr;
+  return newCacheDataArr;
+}
+
 function addNestedFields(currentType, dataFromCacheArr, cacheDataArr) {
   const newCacheDataArr = [];
 

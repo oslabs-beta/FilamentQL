@@ -17,7 +17,7 @@ An interactive demo and more information can be found at [Filament.io](https://w
 
 ### Install Redis
 
-Filament uses Redis. If Redis is not already installed:
+Filament utilizes Redis for its server-side caching. If Redis is not already installed on your machine:
 
 - Install on Mac using Homebrew:
   - In the terminal, enter `brew install redis`

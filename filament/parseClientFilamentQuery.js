@@ -20,68 +20,43 @@ const parseClientFilamentQuery = (query) => {
 
   skipFirstWord();
   findNextCharacter();
-  // newQuery += '}'
 
   function findNextCharacter() {
-    // base case
     if (bracketCount === 0) return;
-    // skips any whitespace
     eatWhiteSpace();
-    // holds value of the 'key', either it is a Type or a Field
-    console.log(query[index]);
 
     createKeyString();
-    console.log(keyString);
-    // this checks for ending brackets and adds one according to how many needed fields there have been
-    // it also finds the next character after placing the closing
 
     if (addClosingBracket()) return true;
 
-    // advances 'index' until it finds a '{' immediately after finding a field
     findOpeningCurlyBracketAfterField();
-    // each if/else if logic is deciding where to look for the data, cache or the tempCacheObject
-    // temp cache object gets reset and more nested as we find more types within the parent object
-    // variableTypeMatch checks for whether we found a place where our variable is used.
+
     if (query[index] === '{' && bracketCount === 1 && !variableTypeMatch) {
-      // if we find our 'keyString' in the cache, we retrieve that object
-      // if we dont find it, we  know the data isnt there
-      // we then add it to our string to retrieve it from our DB
+
       getFromCacheOrAddToQuery();
-      // here we know we have to check the tempCacheObject
-      // we have already retrieved data from cache
     } else if (
       query[index] === '{' &&
       bracketCount !== 1 &&
       !variableTypeMatch
     ) {
-      console.log(keyString);
-      // checks Temp Cache Object for data,
-      // adds to our query string if it finds none, nests new data if we find an object that matches the keyString
-      // we add to types which will affect how many closing '}' we end up adding
       getFromTCOAndNestNewData();
     } else if (
       query[index] === '{' &&
       bracketCount === 1 &&
       variableTypeMatch
     ) {
-      // filter the cache property object using the variable
       filterCachePropertyByVariable();
     } else if (
       query[index] === '{' &&
       bracketCount !== 1 &&
       variableTypeMatch
     ) {
-      // filter the tempCacheObjet by the variable
       filterTCOPropertyByVariable();
     } else if (keyString) {
-      // we have found a field, check if tempCacheObject has that property
-      // if either our cache or tempCacheObject contian our field
       fieldsInCacheOrNot();
     }
 
     index += 1;
-    // if above is true && bracketCount is 1, then we need to ask the cache for that key
-    console.log(newQuery);
     findNextCharacter();
   }
 
@@ -119,9 +94,7 @@ const parseClientFilamentQuery = (query) => {
   }
 
   function skipFirstWord() {
-    // looks for a 'q', which will mean that we found the word 'query'
-    // if we find a '{' it means we found a query using the different syntax
-    while (query[index] !== 'q') {
+    xwhile(query[index] !== 'q') {
       if (query[index] === '{') {
         newQuery += query[index] + ' ';
         index += 1;
@@ -131,15 +104,13 @@ const parseClientFilamentQuery = (query) => {
       index += 1;
     }
 
-    // parse the word 'query'
-    while (query[index] !== ' ') {
+    xwhile(query[index] !== ' ') {
       newQuery += query[index];
       index += 1;
     }
     newQuery += query[index];
     index += 1;
 
-    //  parse either the name and or the variable
     if (query[index].match(charFindRegex)) {
       parseName();
 
@@ -158,28 +129,19 @@ const parseClientFilamentQuery = (query) => {
   }
 
   function eatWhiteSpace() {
-    // query[index] starts out on a space or linebreak
     while (query[index] === ' ' || query[index] === '\n') {
       index += 1;
     }
-    // next query[index] will be a character
   }
 
-  // if we find our 'keyString' in the cache, we retrieve that object
-  // if we dont find it, we  know the data isnt there
-  // we then add it to our string to retrieve it from our DB
   function getFromCacheOrAddToQuery() {
     if (sessionStorage.getItem(keyString.trim())) {
       let tempString = sessionStorage.getItem(keyString.trim());
       tempCacheObject = JSON.parse(tempString)[0];
-      // We want to add this key to our  returned cacheObject because if we are looking for it
-      // no matter what we want the ID stored there.
-      // no matter what we are adding this property to the final cache Object because we need the ID no matter what
       tempTypes.push(keyString);
       typeNeedsAdding = true;
       keyString = '';
     } else {
-      // ??NOT SURE IF THIS MATTERS?????????????????
       totalTypes += 1;
       newQuery += keyString + ' {' + ' id ';
       keyString = '';
@@ -188,8 +150,6 @@ const parseClientFilamentQuery = (query) => {
   }
 
   function getFromTCOAndNestNewData() {
-    console.log(keyString);
-    console.log(tempCacheObject[keyString]);
     if (
       tempCacheObject[keyString.trim()] &&
       tempCacheObject[keyString.trim()][0]
@@ -217,17 +177,13 @@ const parseClientFilamentQuery = (query) => {
         return obj[variableKey[0]] === inputObject[variableKey[0]];
       });
       tempCacheObject = tempArray[0];
-      // variableTypeMatch = ''
     } else {
       totalTypes += 1;
       newQuery += keyString + variableTypeMatch + ' {' + ' id ';
-      // variableTypeMatch = ''
     }
   }
 
   function findOpeningCurlyBracketAfterField() {
-    // advances 'index' until it finds a '{' immediately after finding a field
-
     while (query[index] !== '{' && searchLimiter > 0) {
       index += 1;
       searchLimiter -= 1;
@@ -236,17 +192,10 @@ const parseClientFilamentQuery = (query) => {
   }
 
   function addClosingBracket() {
-    // here we add an ending bracket to the queryString
-    // we check the number of totalTypes
-    // this makes sure we aren't adding a bracket for a Type that we have removed
-    // find the next character
-
     if (query[index] === '}') {
       if (bracketCount) {
         newQuery += '} ';
-        // deal with total types, remove, use bracket Count
         totalTypes -= 1;
-        // THIS WILL CHANGE !!!!!!!!! GO BACK INTO PREVIOUSLY NESTED OBJECT
         tempCacheObject = {};
         bracketCount -= 1;
       }
@@ -256,7 +205,6 @@ const parseClientFilamentQuery = (query) => {
       }
 
       index += 1;
-      // findNextCharacter()
     }
   }
 
@@ -354,7 +302,6 @@ const parseClientFilamentQuery = (query) => {
             });
           }
           let tempData = dataFromCacheArr[i];
-          console.log(cacheDataArr);
           let data = cacheDataArr[i];
 
           if (tempTypesForCacheData.length) {
@@ -383,7 +330,6 @@ const parseClientFilamentQuery = (query) => {
           } else {
             data[keyString.trim()] = tempData[keyString.trim()];
             newCacheDataArr.push(data);
-            // console.log(newCacheDataArr)
           }
         }
         return newCacheDataArr;
@@ -432,7 +378,6 @@ const parseClientFilamentQuery = (query) => {
       bracketCount += 1;
       typeNeedsAdding = false;
     } else if (keyString.trim() !== 'id') {
-      console.log(keyString);
       newQuery += keyString;
       keyString = '';
     }
@@ -453,6 +398,10 @@ const parseClientFilamentQuery = (query) => {
         index += 1;
       }
     }
+  }
+
+  function createKeyString(query, index, charFindRegex, keyString) {
+
   }
 
   return [newQuery, cacheData];

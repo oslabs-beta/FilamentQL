@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 
-import { useFilamentQuery } from '../../filament/hooks';
-import { parseKeyInCache } from '../../filament/utils';
+import { useFilamentQuery } from '../../../filament/hooks';
+import { parseKeyInCache } from '../../../filament/utils';
 
 const query = `
   {
@@ -22,7 +21,7 @@ const query2 = `
     todos {
       id
       text
-      number
+      difficulty
     }
   }
 `;
@@ -49,13 +48,11 @@ const Test = () => {
 
   return (
     <div className="App">
-      <Link to="/demo">Demo</Link>
-      <Link to="/offline">Offline</Link>
       <h1>Todo App</h1>
       <button onClick={() => sessionStorage.clear()}>
         Clear sessionStorage
       </button>
-      <button onClick={() => makeQuery(query2)}>Fetch numbers</button>
+      <button onClick={() => makeQuery(query2)}>Fetch dificulty</button>
       <AddTodo addTodo={addTodo} />
       <TodoList todos={state[keyInCache] || state} toggleTodo={toggleTodo} />
     </div>

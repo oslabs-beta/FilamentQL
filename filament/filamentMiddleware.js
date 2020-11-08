@@ -44,7 +44,7 @@ const wrapper = (client) => async (req, res, next) => {
       transformedQuery,
       redisCacheParsed
     );
-
+    console.log('isMatched', isMatched);
     if (isMatched) return res.status(200).json({ data: dataInRedisCache });
 
     // isMatched === false
@@ -53,6 +53,11 @@ const wrapper = (client) => async (req, res, next) => {
         query: parsedQuery,
       });
       // console.log('response', response);
+      console.log('dataInRedisCache[keyInCache]', dataInRedisCache[keyInCache]);
+      console.log(
+        'response.data.data[keyInCache]',
+        response.data.data[keyInCache]
+      );
       const resTodos = mergeTwoArraysById(
         dataInRedisCache[keyInCache],
         response.data.data[keyInCache]
@@ -73,7 +78,7 @@ const wrapper = (client) => async (req, res, next) => {
       const dataSendToClient = {
         [keyInCache]: resTodos,
       };
-
+      console.log('dataSendToClient', dataSendToClient);
       return res.status(200).json({ data: dataSendToClient });
     } catch (err) {
       console.log('has there been an error????,', err);

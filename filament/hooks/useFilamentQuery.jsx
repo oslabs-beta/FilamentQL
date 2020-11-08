@@ -47,7 +47,7 @@ const useFilamentQuery = (query, defaultState = null) => {
 
       // note: parsing for dissimilarities later
       axios
-        .post('http://localhost:8080/filament', {
+        .post(FILAMENT_ROUTE, {
           query: finalQuery,
           keyInCache,
         })
@@ -66,7 +66,7 @@ const useFilamentQuery = (query, defaultState = null) => {
         });
     } else {
       console.log('makeQuery(), cache not found');
-      axios.post('http://localhost:8080/filament', { query }).then((res) => {
+      axios.post(FILAMENT_ROUTE, { query }).then((res) => {
         setState(res.data.data);
         sessionStorage.setItem(key, JSON.stringify(res.data.data[key]));
       });

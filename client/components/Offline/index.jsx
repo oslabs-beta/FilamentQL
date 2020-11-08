@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { useFilamentMutation } from '../../filament/hooks';
+import { useFilamentMutation } from '../../../filament/hooks';
 
 import {
   getTodosQuery,
   addTodoMutation,
   deleteTodoMutation,
   updateTodoMutation,
-} from '../query';
+} from '../../query';
 
-import UpdateForm from './UpdateForm';
-import OfflineList from './DisplayOfflineList';
-import AddOfflineItem from './AddOfflineItem';
+import UpdateTodo from './UpdateTodo';
+import TodoList from './TodoList';
+import AddTodo from './AddTodo';
 
 const Offline = () => {
   const [updatedText, setUpdated] = useState('');
   const [todoIdToUpdate, setTodoIdToUpdate] = useState(null);
   const [wantsUpdate, setWantsUpdate] = useState(false);
-  const [value, setValue] = useState('');
   const [todos, setTodos] = useState([]);
+  const [networkMode, setNetworkMode] = useState('');
 
   const [
     callAddTodoMutation,
@@ -30,6 +30,11 @@ const Offline = () => {
   const [callDeleteTodoMutation] = useFilamentMutation(deleteTodoMutation);
   const [callUpdateTodoMutation] = useFilamentMutation(updateTodoMutation);
 
+  useEffect(() => {
+    if (navigator.onLine) setNetworkMode('Online');
+    else setNetworkMode('Offline');
+  }, [navigator.onLine]);
+
   // ComponentDidMount | fetch all todos from database
   useEffect(() => {
     axios
@@ -37,21 +42,18 @@ const Offline = () => {
       .then((response) => setTodos(response.data.data.todos));
   }, []);
 
-  const handleAddChange = (e) => setValue(e.target.value);
-
-  const handleAddClick = () => {
+  const handleAddTodo = (value) => {
     if (!value) return;
     callAddTodoMutation(value);
-    setValue('');
   };
 
-  const handleDeleteClick = async (id) => {
+  const handleDelete = async (id) => {
     callDeleteTodoMutation(id);
     const filteredTodos = todos.filter((item) => item.id !== id);
     setTodos(filteredTodos);
   };
 
-  const handleUpdateClick = (id, text) => {
+  const handleUpdate = (id, text) => {
     setWantsUpdate(true);
     setTodoIdToUpdate(id);
     setUpdated(text);
@@ -59,7 +61,7 @@ const Offline = () => {
 
   const handleUpdateChange = (e) => setUpdated(e.target.value);
 
-  const handleUpdateSubmit = async () => {
+  const handleUpdateTodo = async () => {
     callUpdateTodoMutation(todoIdToUpdate, updatedText);
 
     const updatedTodos = todos.map((todo) =>
@@ -73,25 +75,21 @@ const Offline = () => {
 
   return (
     <div>
-      <h1>Online mode</h1>
-      <AddOfflineItem
-        handleAddClick={handleAddClick}
-        value={value}
-        handleAddChange={handleAddChange}
-      />
+      <h1>{networkMode} mode</h1>
+      <AddTodo handleAddTodo={handleAddTodo} />
 
       {wantsUpdate && (
-        <UpdateForm
-          handleUpdateSubmit={handleUpdateSubmit}
+        <UpdateTodo
+          handleUpdateTodo={handleUpdateTodo}
           updatedText={updatedText}
           handleUpdateChange={handleUpdateChange}
         />
       )}
 
-      <OfflineList
+      <TodoList
         todos={todos}
-        handleDeleteClick={handleDeleteClick}
-        handleUpdateClick={handleUpdateClick}
+        handleDelete={handleDelete}
+        handleUpdate={handleUpdate}
       />
     </div>
   );

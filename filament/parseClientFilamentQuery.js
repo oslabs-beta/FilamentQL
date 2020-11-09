@@ -14,7 +14,7 @@ function parseClientFilamentQuery(query) {
   let keyString = '';
   let inputObject = '';
   let holdVarString = '';
-  let variableTypeMatch = '';
+  let typeMatchedWithVariable = '';
   let variableAffectedArray = null;
   let searchLimiter = 1;
   let typeNeedsAdding;
@@ -40,25 +40,25 @@ function parseClientFilamentQuery(query) {
     if (
       currElementIsOpeningBracket() &&
       bracketCountIsOne() &&
-      !variableTypeMatch
+      !typeMatchedWithVariable
     ) {
       getFromCacheOrAddToQuery();
     } else if (
       currElementIsOpeningBracket() &&
       bracketCountNotOne() &&
-      !variableTypeMatch
+      !typeMatchedWithVariable
     ) {
       getFromTCOAndNestNewData();
     } else if (
       currElementIsOpeningBracket() &&
       bracketCountIsOne() &&
-      variableTypeMatch
+      typeMatchedWithVariable
     ) {
       filterCachePropertyByVariable();
     } else if (
       currElementIsOpeningBracket() &&
       bracketCountNotOne() &&
-      variableTypeMatch
+      typeMatchedWithVariable
     ) {
       filterTCOPropertyByVariable();
     } else if (keyString) {
@@ -70,15 +70,14 @@ function parseClientFilamentQuery(query) {
   }
 
   function fieldsInCacheOrNot() {
-    if (tempCacheObject[keyString.trim()]) {
+    if (tempCacheObjectHasKeyString()) {
       addStoredTypesToReturnedDataFromCache();
-    } else if (!tempCacheObject[keyString.trim()]) {
+    } else if (tempCacheObjectNotHaveKeyString()) {
       addFieldToQueryString();
     }
   }
 
   function addStoredTypesToReturnedDataFromCache() {
-    const tempTypesForCacheData = []
     tempTypes.forEach((type) => {
       tempTypesForCacheData.push(type.trim());
     });
@@ -90,40 +89,29 @@ function parseClientFilamentQuery(query) {
       addFieldToQueryString();
       keyString = 'id';
     }
+
     let tempCacheData = {};
     let currentType = tempTypesForCacheData.shift();
     let tempTypeString = sessionStorage.getItem(currentType);
     tempCacheData[currentType] = JSON.parse(tempTypeString);
     let dataFromCacheArr = tempCacheData[currentType];
-    console.log(dataFromCacheArr)
-    if (!tempTypesForCacheData.length) {
-      if (variableForFilter && variableForFilter === currentType) {
-        let variableKey = Object.keys(inputObject);
 
-        dataFromCacheArr = dataFromCacheArr.filter((obj) => {
-          return obj[variableKey[0]] === inputObject[variableKey[0]];
-        });
+    if (tempTypesForCacheDataHasNoLength()) {
+      if (variableExistsAndMatchesCurrentType()) {
+        updateDataFromCacheArrFromFiltered()
       }
-
-      if (!cacheData[currentType]) {
-        cacheData[currentType] = Array.from(
-          { length: dataFromCacheArr.length },
-          (i) => (i = {})
-        );
-        let cacheDataArr = cacheData[currentType];
-        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
+      if (currentTypeNotInCacheData()) {
+        createNewTypeInCacheDataAndUpdateCurent()
       } else {
-        let cacheDataArr = current;
-        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
+        updateCacheDataArrAndUpdateCurrent()
       }
     } else {
-      const cacheDataArr = current;
-      current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr);
+      updateNestedCacheDataArrAndCurrent()
     }
     keyString = '';
   }
 
-  function addFields() {
+  function addFields(currentType, dataFromCacheArr, cacheDataArr) {
     const newCacheDataArr = [];
     for (let i = 0; i < dataFromCacheArr.length; i += 1) {
       let tempData = dataFromCacheArr[i];
@@ -181,11 +169,39 @@ function parseClientFilamentQuery(query) {
     return newCacheDataArr;
   }
 
+  function updateDataFromCacheArrFromFiltered() {
+    let variableKey = Object.keys(inputObject);
+
+    dataFromCacheArr = dataFromCacheArr.filter((obj) => {
+      return obj[variableKey[0]] === inputObject[variableKey[0]];
+    });
+  }
+
+  function updateNestedCacheDataArrAndCurrent() {
+    const cacheDataArr = current;
+    current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr);
+  }
+
+  function updateCacheDataArrAndUpdateCurrent() {
+    let cacheDataArr = current;
+    current = addFields(currentType, dataFromCacheArr, cacheDataArr);
+  }
+
+  function createNewTypeInCacheDataAndUpdateCurent() {
+    cacheData[currentType] = Array.from(
+      { length: dataFromCacheArr.length },
+      (i) => (i = {})
+    );
+    let cacheDataArr = cacheData[currentType];
+
+    current = addFields(currentType, dataFromCacheArr, cacheDataArr);
+  }
+
 
   function addFieldToQueryString() {
     if (
       typeNeedsAdding &&
-      variableTypeMatch === tempTypes[tempTypes.length - 1]
+      typeMatchedWithVariable === tempTypes[tempTypes.length - 1]
     ) {
       newQuery += tempTypes[tempTypes.length - 1];
       newQuery += holdVarString;
@@ -193,7 +209,7 @@ function parseClientFilamentQuery(query) {
       bracketCount += 1;
       totalTypes += 1;
       holdVarString = '';
-      variableTypeMatch = '';
+      typeMatchedWithVariable = '';
       typeNeedsAdding = false;
     } else if (typeNeedsAdding) {
       newQuery += tempTypes[tempTypes.length - 1] + ' {' + ' id ';
@@ -209,76 +225,101 @@ function parseClientFilamentQuery(query) {
   }
 
   function filterTCOPropertyByVariable() {
-    if (tempCacheObject[variableTypeMatch.trim()]) {
-      tempTypes.push(variableTypeMatch);
-      typeNeedsAdding = true;
-      variableAffectedObject = tempCacheObject[variableTypeMatch.trim()];
-      let variableKey = Object.keys(inputObject);
-      tempArray = variableAffectedObject.filter((obj) => {
-        return obj[variableKey[0]] === inputObject[variableKey[0]];
-      });
-      tempCacheObject = tempArray[0];
+    if (variableMatchedTypeInTempCache()) {
+      updateTempCacheObject()
     } else {
-      totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + ' {' + ' id ';
+      addToTotalTypesNewQuery()
     }
+  }
+
+  function updateTempCacheObject() {
+    tempTypes.push(typeMatchedWithVariable);
+    typeNeedsAdding = true;
+    variableAffectedObject = tempCacheObject[typeMatchedWithVariable.trim()];
+    let variableKey = Object.keys(inputObject);
+    tempArray = variableAffectedObject.filter((obj) => {
+      return obj[variableKey[0]] === inputObject[variableKey[0]];
+    });
+    tempCacheObject = tempArray[0];
+  }
+
+  function addToTotalTypesNewQuery() {
+    totalTypes += 1;
+    newQuery += keyString + typeMatchedWithVariable + ' {' + ' id ';
   }
 
   function filterCachePropertyByVariable() {
-    if (sessionStorage.getItem(keyString.trim())) {
-      let tempString = sessionStorage.getItem(keyString.trim());
-
-      variableAffectedArray = JSON.parse(tempString);
-      let variableKey = Object.keys(inputObject);
-
-      let tempArray = variableAffectedArray.filter((obj) => {
-        return obj[variableKey[0]] === inputObject[variableKey[0]];
-      });
-
-      tempCacheObject = tempArray[0];
-      tempTypes.push(variableTypeMatch);
-      typeNeedsAdding = true;
-
-      keyString = '';
+    if (sessionStorageHasItem()) {
+      setCacheDataToGlobalVariables()
     } else {
-      totalTypes += 1;
-      newQuery += keyString + variableTypeMatch + ' {' + ' id ';
-      keyString = '';
+      updateTotalTypesNewQueryKeyString()
     }
   }
 
+  function getFromCacheAndCreateTempArray() {
+    let tempString = sessionStorage.getItem(keyString.trim());
+    variableAffectedArray = JSON.parse(tempString);
+    let variableKey = Object.keys(inputObject);
+
+    return variableAffectedArray.filter((obj) => {
+      return obj[variableKey[0]] === inputObject[variableKey[0]];
+    });
+  }
+
+  function setCacheDataToGlobalVariables() {
+    tempCacheObject = getFromCacheAndCreateTempArray()[0];
+    tempTypes.push(typeMatchedWithVariable);
+    typeNeedsAdding = true;
+    keyString = '';
+  }
+
+  function updateTotalTypesNewQueryKeyString() {
+    totalTypes += 1;
+    newQuery += keyString + typeMatchedWithVariable + ' {' + ' id ';
+    keyString = '';
+  }
 
   function getFromTCOAndNestNewData() {
-    if (
-      tempCacheObject[keyString.trim()] &&
-      tempCacheObject[keyString.trim()][0]
-    ) {
-      tempCacheObject = tempCacheObject[keyString.trim()][0];
-      tempTypes.push(keyString);
-      typeNeedsAdding = true;
-
-      keyString = '';
+    if (keyStringIsInTempCacheObject()) {
+      nestNewDataFromTempCacheObject()
     } else {
-      totalTypes += 1;
-      newQuery += keyString + ' {' + ' id ';
-      keyString = '';
-      bracketCount += 1;
+      updateGlobalVariablesIfNotFound()
     }
+  }
+  function keyStringIsInTempCacheObject() {
+    tempCacheObject[keyString.trim()] &&
+      tempCacheObject[keyString.trim()][0]
+  }
+
+  function nestNewDataFromTempCacheObject() {
+    tempCacheObject = tempCacheObject[keyString.trim()][0];
+    tempTypes.push(keyString);
+    typeNeedsAdding = true;
+
+    keyString = '';
   }
 
   function getFromCacheOrAddToQuery() {
-    if (sessionStorage.getItem(keyString.trim())) {
-      let tempString = sessionStorage.getItem(keyString.trim());
-      tempCacheObject = JSON.parse(tempString)[0];
-      tempTypes.push(keyString);
-      typeNeedsAdding = true;
-      keyString = '';
+    if (sessionStorageHasItem()) {
+      updateTempCacheObjectFromSessionStorage()
     } else {
-      totalTypes += 1;
-      newQuery += keyString + ' {' + ' id ';
-      keyString = '';
-      bracketCount += 1;
+      updateGlobalVariablesIfNotFound()
     }
+  }
+
+  function updateGlobalVariablesIfNotFound() {
+    totalTypes += 1;
+    newQuery += keyString + ' {' + ' id ';
+    keyString = '';
+    bracketCount += 1;
+  }
+
+  function updateTempCacheObjectFromSessionStorage() {
+    let tempString = sessionStorage.getItem(keyString.trim());
+    tempCacheObject = JSON.parse(tempString)[0];
+    tempTypes.push(keyString);
+    typeNeedsAdding = true;
+    keyString = '';
   }
 
   function findOpeningCurlyBracketAfterField() {
@@ -291,6 +332,7 @@ function parseClientFilamentQuery(query) {
 
   function addClosingBracketIfFound() {
     let isFinalBracket = false;
+
     if (currElementIsClosingBracket()) {
       if (bracketCount) {
         newQuery += '} ';
@@ -298,12 +340,10 @@ function parseClientFilamentQuery(query) {
         tempCacheObject = {};
         bracketCount -= 1;
       }
-
       if (bracketCount === 0) {
         isFinalBracket = true;
         return isFinalBracket;
       }
-
       index += 1;
     }
 
@@ -318,17 +358,13 @@ function parseClientFilamentQuery(query) {
           parseAndHoldVarLocation();
           break;
         }
-
-
-        keyString += query[index];
-        index += 1;
-        // addElementAndIncrementIndex()
+        addToKeyString()
       }
     }
   }
 
   function parseAndHoldVarLocation() {
-    variableTypeMatch = keyString;
+    typeMatchedWithVariable = keyString;
     variableForFilter = keyString;
 
     while (query[index] !== ')') {
@@ -345,9 +381,39 @@ function parseClientFilamentQuery(query) {
       index += 1;
     }
   }
-  // --------------------------
 
-  // helperFunctions.js
+  // General Helper Functions
+  function tempTypesForCacheDataHasNoLength() {
+    !tempTypesForCacheData.length
+  }
+  function variableExistsAndMatchesCurrentType() {
+    variableForFilter && variableForFilter === currentType
+  }
+
+  function currentTypeNotInCacheData() {
+    return !cacheData[currentType]
+  }
+
+  function tempCacheObjectNotHaveKeyString() {
+    return !tempCacheObject[keyString.trim()]
+  }
+
+  function tempCacheObjectHasKeyString() {
+    tempCacheObject[keyString.trim()]
+  }
+  function variableMatchedTypeInTempCache() {
+    return tempCacheObject[typeMatchedWithVariable.trim()]
+  }
+
+  function sessionStorageHasItem() {
+    return sessionStorage.getItem(keyString.trim())
+  }
+
+  function addToKeyString() {
+    keyString += query[index];
+    index += 1;
+  }
+
   function bracketCountNotOne() {
     return bracketCount !== 1;
   }
@@ -392,14 +458,11 @@ function parseClientFilamentQuery(query) {
   function currElementIsAChar() {
     return query[index].match(charFindRegex)
   }
-  // -----------------
 
-  // parseNamesAndVariables.js
+  // Parse Names and Variables
   function parseIfNameOrVariable() {
-
     if (currElementIsAChar()) {
       parseName();
-
       if (currElementIsASpace()) {
         index += 1;
       } else {
@@ -453,16 +516,12 @@ function parseClientFilamentQuery(query) {
         foundBracketOrQ = 'bracket';
         break;
       }
-
       index += 1;
     }
 
     return foundBracketOrQ;
   }
 };
-// ---------------------------
-
-// findNextCharacter.js
 
 export default parseClientFilamentQuery
 

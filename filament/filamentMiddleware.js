@@ -49,7 +49,9 @@ const filamentMiddlewareWrapper = (client) => async (req, res) => {
 
     // isMatched === false
     try {
-      const response = await axios.post(BASE_URL, { query: parsedQuery });
+      const response = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
+        query: parsedQuery,
+      });
       const resTodos = mergeTwoArraysById(
         dataInRedisCache[keyInCache],
         response.data.data[keyInCache]

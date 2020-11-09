@@ -1,4 +1,3 @@
-// parseClientFilamentQuery.js
 function parseClientFilamentQuery(query) {
   const cacheData = {};
   const tempTypes = [];
@@ -70,9 +69,9 @@ function parseClientFilamentQuery(query) {
   }
 
   function fieldsInCacheOrNot() {
-    if (tempCacheObjectHasKeyString()) {
+    if (tempCacheObject[keyString.trim()]) {
       addStoredTypesToReturnedDataFromCache();
-    } else if (tempCacheObjectNotHaveKeyString()) {
+    } else if (!tempCacheObject[keyString.trim()]) {
       addFieldToQueryString();
     }
   }
@@ -100,10 +99,17 @@ function parseClientFilamentQuery(query) {
       if (variableExistsAndMatchesCurrentType()) {
         updateDataFromCacheArrFromFiltered()
       }
-      if (currentTypeNotInCacheData()) {
-        createNewTypeInCacheDataAndUpdateCurent()
+      if (!cacheData[currentType]) {
+        cacheData[currentType] = Array.from(
+          { length: dataFromCacheArr.length },
+          (i) => (i = {})
+        );
+        let cacheDataArr = cacheData[currentType];
+
+        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
       } else {
-        updateCacheDataArrAndUpdateCurrent()
+        let cacheDataArr = current;
+        current = addFields(currentType, dataFromCacheArr, cacheDataArr);
       }
     } else {
       updateNestedCacheDataArrAndCurrent()
@@ -169,6 +175,11 @@ function parseClientFilamentQuery(query) {
     return newCacheDataArr;
   }
 
+  function updateNestedCacheDataArrAndCurrent() {
+    const cacheDataArr = current;
+    current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr);
+  }
+
   function updateDataFromCacheArrFromFiltered() {
     let variableKey = Object.keys(inputObject);
 
@@ -176,27 +187,6 @@ function parseClientFilamentQuery(query) {
       return obj[variableKey[0]] === inputObject[variableKey[0]];
     });
   }
-
-  function updateNestedCacheDataArrAndCurrent() {
-    const cacheDataArr = current;
-    current = addNestedFields(currentType, dataFromCacheArr, cacheDataArr);
-  }
-
-  function updateCacheDataArrAndUpdateCurrent() {
-    let cacheDataArr = current;
-    current = addFields(currentType, dataFromCacheArr, cacheDataArr);
-  }
-
-  function createNewTypeInCacheDataAndUpdateCurent() {
-    cacheData[currentType] = Array.from(
-      { length: dataFromCacheArr.length },
-      (i) => (i = {})
-    );
-    let cacheDataArr = cacheData[currentType];
-
-    current = addFields(currentType, dataFromCacheArr, cacheDataArr);
-  }
-
 
   function addFieldToQueryString() {
     if (
@@ -249,34 +239,26 @@ function parseClientFilamentQuery(query) {
   }
 
   function filterCachePropertyByVariable() {
-    if (sessionStorageHasItem()) {
-      setCacheDataToGlobalVariables()
+    if (sessionStorage.getItem(keyString.trim())) {
+      let tempString = sessionStorage.getItem(keyString.trim());
+
+      variableAffectedArray = JSON.parse(tempString);
+      let variableKey = Object.keys(inputObject);
+
+      let tempArray = variableAffectedArray.filter((obj) => {
+        return obj[variableKey[0]] === inputObject[variableKey[0]];
+      });
+
+      tempCacheObject = tempArray[0];
+      tempTypes.push(typeMatchedWithVariable);
+      typeNeedsAdding = true;
+
+      keyString = '';
     } else {
-      updateTotalTypesNewQueryKeyString()
+      totalTypes += 1;
+      newQuery += keyString + typeMatchedWithVariable + ' {' + ' id ';
+      keyString = '';
     }
-  }
-
-  function getFromCacheAndCreateTempArray() {
-    let tempString = sessionStorage.getItem(keyString.trim());
-    variableAffectedArray = JSON.parse(tempString);
-    let variableKey = Object.keys(inputObject);
-
-    return variableAffectedArray.filter((obj) => {
-      return obj[variableKey[0]] === inputObject[variableKey[0]];
-    });
-  }
-
-  function setCacheDataToGlobalVariables() {
-    tempCacheObject = getFromCacheAndCreateTempArray()[0];
-    tempTypes.push(typeMatchedWithVariable);
-    typeNeedsAdding = true;
-    keyString = '';
-  }
-
-  function updateTotalTypesNewQueryKeyString() {
-    totalTypes += 1;
-    newQuery += keyString + typeMatchedWithVariable + ' {' + ' id ';
-    keyString = '';
   }
 
   function getFromTCOAndNestNewData() {
@@ -287,7 +269,7 @@ function parseClientFilamentQuery(query) {
     }
   }
   function keyStringIsInTempCacheObject() {
-    tempCacheObject[keyString.trim()] &&
+    return tempCacheObject[keyString.trim()] &&
       tempCacheObject[keyString.trim()][0]
   }
 
@@ -299,19 +281,19 @@ function parseClientFilamentQuery(query) {
     keyString = '';
   }
 
+  function updateGlobalVariablesIfNotFound() {
+    totalTypes += 1;
+    newQuery += keyString + ' {' + ' id ';
+    keyString = '';
+    bracketCount += 1;
+  }
+
   function getFromCacheOrAddToQuery() {
     if (sessionStorageHasItem()) {
       updateTempCacheObjectFromSessionStorage()
     } else {
       updateGlobalVariablesIfNotFound()
     }
-  }
-
-  function updateGlobalVariablesIfNotFound() {
-    totalTypes += 1;
-    newQuery += keyString + ' {' + ' id ';
-    keyString = '';
-    bracketCount += 1;
   }
 
   function updateTempCacheObjectFromSessionStorage() {
@@ -332,7 +314,6 @@ function parseClientFilamentQuery(query) {
 
   function addClosingBracketIfFound() {
     let isFinalBracket = false;
-
     if (currElementIsClosingBracket()) {
       if (bracketCount) {
         newQuery += '} ';
@@ -340,10 +321,12 @@ function parseClientFilamentQuery(query) {
         tempCacheObject = {};
         bracketCount -= 1;
       }
+
       if (bracketCount === 0) {
         isFinalBracket = true;
         return isFinalBracket;
       }
+
       index += 1;
     }
 
@@ -358,7 +341,11 @@ function parseClientFilamentQuery(query) {
           parseAndHoldVarLocation();
           break;
         }
-        addToKeyString()
+
+
+        keyString += query[index];
+        index += 1;
+        // addElementAndIncrementIndex()
       }
     }
   }
@@ -381,39 +368,22 @@ function parseClientFilamentQuery(query) {
       index += 1;
     }
   }
+  // --------------------------
 
-  // General Helper Functions
-  function tempTypesForCacheDataHasNoLength() {
-    !tempTypesForCacheData.length
-  }
+  //  General Helper Functions
   function variableExistsAndMatchesCurrentType() {
-    variableForFilter && variableForFilter === currentType
+    return variableForFilter && variableForFilter === currentType
   }
-
-  function currentTypeNotInCacheData() {
-    return !cacheData[currentType]
+  function tempTypesForCacheDataHasNoLength() {
+    return !tempTypesForCacheData.length
   }
-
-  function tempCacheObjectNotHaveKeyString() {
-    return !tempCacheObject[keyString.trim()]
-  }
-
-  function tempCacheObjectHasKeyString() {
-    tempCacheObject[keyString.trim()]
-  }
-  function variableMatchedTypeInTempCache() {
-    return tempCacheObject[typeMatchedWithVariable.trim()]
-  }
-
   function sessionStorageHasItem() {
     return sessionStorage.getItem(keyString.trim())
   }
 
-  function addToKeyString() {
-    keyString += query[index];
-    index += 1;
+  function variableMatchedTypeInTempCache() {
+    return tempCacheObject[typeMatchedWithVariable.trim()]
   }
-
   function bracketCountNotOne() {
     return bracketCount !== 1;
   }
@@ -459,10 +429,12 @@ function parseClientFilamentQuery(query) {
     return query[index].match(charFindRegex)
   }
 
-  // Parse Names and Variables
+  // Parse Names And Variables
   function parseIfNameOrVariable() {
+
     if (currElementIsAChar()) {
       parseName();
+
       if (currElementIsASpace()) {
         index += 1;
       } else {
@@ -516,6 +488,7 @@ function parseClientFilamentQuery(query) {
         foundBracketOrQ = 'bracket';
         break;
       }
+
       index += 1;
     }
 

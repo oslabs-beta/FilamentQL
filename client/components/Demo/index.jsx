@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { mergeTwoArraysById, parseKeyInCache } from '../../filament/utils';
-import parseClientFilamentQuery from '../../filament/parseClientFilamentQuery';
+import { mergeTwoArraysById, parseKeyInCache } from '../../../filament/utils';
+import parseClientFilamentQuery from '../../../filament/parseClientFilamentQuery';
 
 import './Demo.scss';
 

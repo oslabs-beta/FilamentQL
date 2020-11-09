@@ -1,2 +1,3 @@
-export const FILAMENT_ROUTE = `http://localhost:8080/filament`;
-export const GRAPHQL_ROUTE = `http://localhost:4000/graphql`;
+export const FILAMENT_ROUTE = '/filament';
+export const GRAPHQL_ROUTE = '/graphql';
+export const GRAPHQL_ROUTE_FROM_SERVER = 'http://localhost:4000/graphql';

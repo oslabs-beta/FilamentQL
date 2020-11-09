@@ -1,20 +1,22 @@
 const axios = require('axios');
 
-import { GRAPHQL_ROUTE } from './constants';
+import { GRAPHQL_ROUTE_FROM_SERVER } from './constants';
 import { mergeTwoArraysById, transformQuery } from './utils';
 import parseServerFilamentQuery from './parseServerFilamentQuery';
 
-const wrapper = (client) => async (req, res, next) => {
+const filamentMiddlewareWrapper = (client) => async (req, res) => {
   const clientIP =
     req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const { query, keyInCache } = req.body;
-  console.log('KEY IN CACHE', keyInCache);
+
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache
     console.log('redisCacheAtIP: ', redisCacheAtIP);
     if (!redisCacheAtIP) {
       try {
-        const resFromGraphQL = await axios.post(GRAPHQL_ROUTE, { query });
+        const resFromGraphQL = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
+          query,
+        });
 
         client.set(
           clientIP,
@@ -47,8 +49,9 @@ const wrapper = (client) => async (req, res, next) => {
 
     // isMatched === false
     try {
-      const response = await axios.post(GRAPHQL_ROUTE, { query: parsedQuery });
-      // console.log('response', response);
+      const response = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
+        query: parsedQuery,
+      });
       const resTodos = mergeTwoArraysById(
         dataInRedisCache[keyInCache],
         response.data.data[keyInCache]
@@ -72,9 +75,9 @@ const wrapper = (client) => async (req, res, next) => {
 
       return res.status(200).json({ data: dataSendToClient });
     } catch (err) {
-      console.log('has there been an error????,', err);
+      console.log(err);
     }
   });
 };
 
-module.exports = wrapper;
+export default filamentMiddlewareWrapper;

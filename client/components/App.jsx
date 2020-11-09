@@ -8,11 +8,11 @@ import Offline from './Offline';
 sessionStorage.clear();
 
 const App = () => (
-  <div className="App">
+  <div className='App'>
     <Switch>
-      <Route path="/offline" component={Offline} />
-      <Route path="/demo" component={Demo} />
-      <Route path="/" component={Test} />
+      <Route path='/offline' component={Offline} />
+      <Route path='/demo' component={Demo} />
+      <Route path='/' component={Test} />
     </Switch>
   </div>
 );

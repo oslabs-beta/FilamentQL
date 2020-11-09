@@ -1,75 +1,58 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 import { GRAPHQL_ROUTE } from '../constants';
 import { uniqueId } from '../utils';
 
+const saveDataToCache = (key, value) =>
+  sessionStorage.setItem(key, JSON.stringify(value));
+
+const getDataFromCache = (key) => JSON.parse(sessionStorage.getItem(key));
+
 const useFilamentMutation = (mutation, callback) => {
   const [state, setState] = useState(null);
-  const useMutationId = uniqueId();
+  const [intervalId, setIntervalId] = useState(null);
+  const { current: mutationId } = useRef(uniqueId());
 
-  // Run callback provided d `useFilamentMutation` is called
+  const offlineQueueKey = mutationId + '_offline_queue';
+  const intervalIdKey = mutationId + '_interval';
+
+  // Run callback passed in by `useFilamentMutation`
   useEffect(() => {
     if (state && callback) callback();
   }, [state]);
 
   // Run once
   useEffect(() => {
-    setOfflineQueueInCache();
-    setOfflineIntervalIdInCache();
-
-    return () =>
-      clearInterval(JSON.parse(sessionStorage.getItem('offlineIntervalId')));
+    initializeOfflineQueue();
+    startOfflineInterval();
+    return () => clearInterval(intervalId);
   }, []);
 
-  const setOfflineQueueInCache = () => {
-    const offlineQueue = sessionStorage.getItem('offlineQueue');
-    if (!offlineQueue) sessionStorage.setItem('offlineQueue', '[]');
+  const initializeOfflineQueue = () => {
+    const offlineQueue = getDataFromCache(offlineQueueKey);
+    if (!offlineQueue) saveDataToCache(offlineQueueKey, []);
   };
 
-  const getOfflineQueue = () =>
-    JSON.parse(sessionStorage.getItem('offlineQueue'));
+  const startOfflineInterval = () => {
+    let offlineIntervalId = getDataFromCache(intervalIdKey);
+    if (offlineIntervalId) return;
 
-  const setOfflineIntervalIdInCache = () => {
-    let offlineIntervalId = sessionStorage.getItem('offlineIntervalId');
-
-    if (!offlineIntervalId) {
-      offlineIntervalId = setInterval(processOfflineQueue, 1000);
-      sessionStorage.setItem(
-        'offlineIntervalId',
-        JSON.stringify(offlineIntervalId)
-      );
-    }
+    offlineIntervalId = setInterval(processOfflineQueue, 1000);
+    saveDataToCache(intervalIdKey, offlineIntervalId);
+    setIntervalId(offlineIntervalId);
   };
 
-  const processOfflineQueue = () => {
-    if (!navigator.onLine) return;
-    console.log('navigator.onLine', navigator.onLine);
-    const offlineQueue = getOfflineQueue();
-    console.log('offlineQueue', offlineQueue);
+  const processOfflineQueue = async () => {
+    const offlineQueue = getDataFromCache(offlineQueueKey);
 
-    const { matchedMutations, notMatchedMutations } = offlineQueue.reduce(
-      (result, currentMutation) => {
-        if (currentMutation.id === useMutationId) {
-          result.matchedMutations.push(currentMutation);
-        } else {
-          result.notMatchedMutations.push(currentMutation);
-        }
-        return result;
-      },
-      { matchedMutations: [], notMatchedMutations: [] }
-    );
-
-    // Save non-relevant mutations back to cache
-    sessionStorage.setItem('offlineQueue', JSON.stringify(notMatchedMutations));
-    console.log('matchedMutations', matchedMutations);
-    matchedMutations.forEach(async (currentMutation) => {
-      const response = await axios.post(GRAPHQL_ROUTE, {
-        query: currentMutation.mutation,
-      });
-
+    while (navigator.onLine && offlineQueue.length) {
+      const mutation = offlineQueue.shift();
+      const response = await axios.post(GRAPHQL_ROUTE, { query: mutation });
       setState(response.data.data);
-    });
+    }
+
+    saveDataToCache(offlineQueueKey, offlineQueue);
   };
 
   const makeMutation = async (...args) => {
@@ -83,9 +66,9 @@ const useFilamentMutation = (mutation, callback) => {
     }
 
     // offline
-    const offlineQueue = getOfflineQueue();
-    offlineQueue.push({ id: useMutationId, mutation: mutation(...args) });
-    sessionStorage.setItem('offlineQueue', JSON.stringify(offlineQueue));
+    const offlineQueue = getDataFromCache(offlineQueueKey);
+    offlineQueue.push(mutation(...args));
+    saveDataToCache(offlineQueueKey, offlineQueue);
   };
 
   return [makeMutation, state];

@@ -4,7 +4,7 @@ import { GRAPHQL_ROUTE_FROM_SERVER } from './constants';
 import { mergeTwoArraysById, transformQuery } from './utils';
 import parseServerFilamentQuery from './parseServerFilamentQuery';
 
-const wrapper = (client) => async (req, res, next) => {
+const filamentMiddlewareWrapper = (client) => async (req, res) => {
   const clientIP =
     req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const { query, keyInCache } = req.body;
@@ -86,4 +86,4 @@ const wrapper = (client) => async (req, res, next) => {
   });
 };
 
-module.exports = wrapper;
+export default filamentMiddlewareWrapper;

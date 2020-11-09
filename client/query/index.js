@@ -1,5 +1,5 @@
 export const getTodosQuery = `
-  {
+  query {
     todos { 
       id
       text

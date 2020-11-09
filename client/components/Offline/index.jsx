@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { useFilamentMutation } from '../../../filament/hooks';
+import { useFilamentMutation } from '../../../filament';
 
 import {
   getTodosQuery,
@@ -21,11 +21,12 @@ const Offline = () => {
   const [todos, setTodos] = useState([]);
   const [networkMode, setNetworkMode] = useState('');
 
-  const [
-    callAddTodoMutation,
-    addTodoResponse,
-  ] = useFilamentMutation(addTodoMutation, () =>
-    setTodos([...todos, addTodoResponse.addTodo])
+  const [callAddTodoMutation, addTodoResponse] = useFilamentMutation(
+    addTodoMutation,
+    () => {
+      console.log(addTodoResponse.addTodo);
+      setTodos([...todos, addTodoResponse.addTodo]);
+    }
   );
   const [callDeleteTodoMutation] = useFilamentMutation(deleteTodoMutation);
   const [callUpdateTodoMutation] = useFilamentMutation(updateTodoMutation);
@@ -91,6 +92,33 @@ const Offline = () => {
         handleDelete={handleDelete}
         handleUpdate={handleUpdate}
       />
+
+      <Example />
+      <Example2 />
+    </div>
+  );
+};
+
+const Example = () => {
+  const [call, data] = useFilamentMutation(addTodoMutation, () => {});
+
+  return (
+    <div>
+      <button onClick={() => call('just do it!')}>Make mutation</button>
+      <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
+    </div>
+  );
+};
+
+const Example2 = () => {
+  const [call, data] = useFilamentMutation(addTodoMutation, () => {
+    console.log('2', data.addTodo);
+  });
+
+  return (
+    <div>
+      <button onClick={() => call('nooo!')}>Mutate!</button>
+      <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
     </div>
   );
 };

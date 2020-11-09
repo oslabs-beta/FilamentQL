@@ -6,8 +6,11 @@ const { mergeTwoArraysById, transformQuery } = require('./utils')
 const serverFilamentQuery = require('./serverFilamentQuery')
 
 const wrapper = (client) => async (req, res, next) => {
+  console.log('hi')
+
   const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const { query, keyInCache } = req.body
+  console.log(query)
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache
     console.log('redisCacheAtIP: ', redisCacheAtIP)

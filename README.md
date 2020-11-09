@@ -69,4 +69,4 @@ app.listen(3000);
 
 ### Notes
 
-- Currently, Filament v1.0 can only cache and parse queries without arguments, variables, or directives. These requests will be queried like normal, but will not be cached.
+- Currently, Filament v1.0 can only cache and parse queries without mutations, arguments, variables, or directives. These requests will be queried like normal, but will not be cached.

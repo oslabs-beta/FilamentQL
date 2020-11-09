@@ -8,7 +8,7 @@ const filamentMiddlewareWrapper = (client) => async (req, res) => {
   const clientIP =
     req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const { query, keyInCache } = req.body;
-  console.log('KEY IN CACHE', keyInCache);
+
   client.get(clientIP, async (err, redisCacheAtIP) => {
     // clientIP not found in cache
     console.log('redisCacheAtIP: ', redisCacheAtIP);
@@ -44,20 +44,12 @@ const filamentMiddlewareWrapper = (client) => async (req, res) => {
       transformedQuery,
       redisCacheParsed
     );
-    console.log('isMatched', isMatched);
+
     if (isMatched) return res.status(200).json({ data: dataInRedisCache });
 
     // isMatched === false
     try {
-      const response = await axios.post(GRAPHQL_ROUTE_FROM_SERVER, {
-        query: parsedQuery,
-      });
-      // console.log('response', response);
-      console.log('dataInRedisCache[keyInCache]', dataInRedisCache[keyInCache]);
-      console.log(
-        'response.data.data[keyInCache]',
-        response.data.data[keyInCache]
-      );
+      const response = await axios.post(BASE_URL, { query: parsedQuery });
       const resTodos = mergeTwoArraysById(
         dataInRedisCache[keyInCache],
         response.data.data[keyInCache]
@@ -78,10 +70,10 @@ const filamentMiddlewareWrapper = (client) => async (req, res) => {
       const dataSendToClient = {
         [keyInCache]: resTodos,
       };
-      console.log('dataSendToClient', dataSendToClient);
+
       return res.status(200).json({ data: dataSendToClient });
     } catch (err) {
-      console.log('has there been an error????,', err);
+      console.log(err);
     }
   });
 };

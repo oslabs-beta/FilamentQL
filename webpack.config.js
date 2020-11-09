@@ -28,10 +28,12 @@ module.exports = {
   },
   devServer: {
     publicPath: '/build',
-    proxy: {
-      '/filament': 'http://localhost:4000/filament',
-      '/graphql': 'http://localhost:4000/graphql',
-    },
+    proxy: [
+      {
+        context: ['/filament', '/graphql'],
+        target: 'http://localhost:4000',
+      },
+    ],
   },
   resolve: {
     extensions: ['.js', '.jsx'],

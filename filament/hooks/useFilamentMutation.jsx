@@ -1,74 +1,74 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-import { FILAMENT_ROUTE } from '../constants';
+import { GRAPHQL_ROUTE } from '../constants';
+import { uniqueId } from '../utils';
 
-const uniqueId = () => '_' + Math.random().toString(36).substr(2, 9);
+const saveDataToCache = (key, value) =>
+  sessionStorage.setItem(key, JSON.stringify(value));
 
-const useFilamentMutation = (mutation) => {
+const getDataFromCache = (key) => JSON.parse(sessionStorage.getItem(key));
+
+const useFilamentMutation = (mutation, callback) => {
   const [state, setState] = useState(null);
-  const [offlineQueue, setOfflineQueue] = useState([]);
-  const useMutationId = uniqueId();
+  const [intervalId, setIntervalId] = useState(null);
+  const { current: mutationId } = useRef(uniqueId());
+
+  const offlineQueueKey = mutationId + '_offline_queue';
+  const intervalIdKey = mutationId + '_interval';
+
+  // Run callback passed in by `useFilamentMutation`
+  useEffect(() => {
+    if (state && callback) callback();
+  }, [state]);
 
   // Run once
   useEffect(() => {
-    const offlineQueue = sessionStorage.getItem('offlineQueue');
-    let offlineIntervalId = sessionStorage.getItem('offlineIntervalId');
-
-    if (!offlineQueue)
-      sessionStorage.setItem('offlineQueue', JSON.stringify([]));
-    else setOfflineQueue(JSON.parse(offlineQueue));
-
-    if (!offlineIntervalId) {
-      offlineIntervalId = setInterval(() => {
-        if (!navigator.onLine) return;
-
-        const { matchedMutations, notMatchedMutations } = offlineQueue.reduce(
-          (result, currentMutation) => {
-            if (currentMutation.id === useMutationId) {
-              result.matchedMutations.push(currentMutation);
-            } else {
-              result.notMatchedMutations.push(currentMutation);
-            }
-            return result;
-          },
-          { matchedMutations: [], notMatchedMutations: [] }
-        );
-
-        // Save non-relevant mutations back to cache
-        sessionStorage.setItem(
-          'offlineQueue',
-          JSON.stringify(notMatchedMutations)
-        );
-
-        matchedMutations.forEach(async (currentMutation) => {
-          const response = await axios.post(FILAMENT_ROUTE, {
-            query: currentMutation,
-          });
-
-          setState(response.data.data);
-        });
-      }, 1000);
-
-      sessionStorage.setItem(
-        'offlineIntervalId',
-        JSON.stringify(offlineIntervalId)
-      );
-    }
-
-    return () => clearInterval(offlineIntervalId);
+    initializeOfflineQueue();
+    startOfflineInterval();
+    return () => clearInterval(intervalId);
   }, []);
 
-  const makeMutation = async () => {
+  const initializeOfflineQueue = () => {
+    const offlineQueue = getDataFromCache(offlineQueueKey);
+    if (!offlineQueue) saveDataToCache(offlineQueueKey, []);
+  };
+
+  const startOfflineInterval = () => {
+    let offlineIntervalId = getDataFromCache(intervalIdKey);
+    if (offlineIntervalId) return;
+
+    offlineIntervalId = setInterval(processOfflineQueue, 1000);
+    saveDataToCache(intervalIdKey, offlineIntervalId);
+    setIntervalId(offlineIntervalId);
+  };
+
+  const processOfflineQueue = async () => {
+    const offlineQueue = getDataFromCache(offlineQueueKey);
+
+    while (navigator.onLine && offlineQueue.length) {
+      const mutation = offlineQueue.shift();
+      const response = await axios.post(GRAPHQL_ROUTE, { query: mutation });
+      setState(response.data.data);
+    }
+
+    saveDataToCache(offlineQueueKey, offlineQueue);
+  };
+
+  const makeMutation = async (...args) => {
     // online
     if (navigator.onLine) {
-      const response = await axios.post(FILAMENT_ROUTE, { query: mutation });
+      const response = await axios.post(GRAPHQL_ROUTE, {
+        query: mutation(...args),
+      });
       setState(response.data.data);
       return;
     }
 
     // offline
-    offlineQueue.push({ id: useMutationId, mutation });
+    const offlineQueue = getDataFromCache(offlineQueueKey);
+    offlineQueue.push(mutation(...args));
+    saveDataToCache(offlineQueueKey, offlineQueue);
   };
 
   return [makeMutation, state];

@@ -7,7 +7,7 @@ Filament is an easy and practical server and client-side caching library for gra
 #### Server-Side Caching
 
 #### Client-Side Caching
-<p align="left"><img src="./Filament Client-side caching.png" width='400' height='400' style="margin-top: 5px; margin-bottom: 5px;"></p>
+<p align="left"><img src="./Filament Client-side caching.png" width='500' height='500' style="margin-top: 5px; margin-bottom: 5px;"></p>
 ### Contributors
 
 Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by

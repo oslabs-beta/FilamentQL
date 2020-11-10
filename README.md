@@ -6,7 +6,7 @@ Filament is an easy and practical server and client-side caching library for gra
 
 #### Server-Side Caching
 
-<p align="left"><img src="./Filament server-side caching - v2.0.png" width='600' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
+<p align="left"><img src="./server-diagram.png" width='600' height='500' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
 #### Client-Side Caching
 

@@ -5,10 +5,9 @@
 Filament is an easy and practical server and client-side caching library for graphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
 
 #### Server-Side Caching
-<p align="center"><img src="./Filament Client-side caching.png" width='200' height='200' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
 #### Client-Side Caching
-
+<p align="left"><img src="./Filament Client-side caching.png" width='400' height='400' style="margin-top: 5px; margin-bottom: 5px;"></p>
 ### Contributors
 
 Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by

@@ -1,4 +1,4 @@
-<p align="center"><img src="./placeholderLogo.png" width='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
+<p align="left"><img src="./placeholderLogo.png" width='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 ## Filament
 

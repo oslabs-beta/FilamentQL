@@ -36,7 +36,6 @@ const Offline = () => {
     else setNetworkMode("Offline");
   }, [navigator.onLine]);
 
-  // ComponentDidMount | fetch all todos from database
   useEffect(() => {
     axios
       .post("/graphql", { query: getTodosQuery })
@@ -110,31 +109,6 @@ const Offline = () => {
           <li>The new todo will show up in the list!</li>
         </ul>
       </div>
-
-      <Example />
-      <Example2 />
-    </div>
-  );
-};
-
-const Example = () => {
-  const [call, data] = useFilamentMutation(addTodoMutation, () => {});
-
-  return (
-    <div className='makeMutation'>
-      <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
-    </div>
-  );
-};
-
-const Example2 = () => {
-  const [call, data] = useFilamentMutation(addTodoMutation, () => {
-    console.log("2", data.addTodo);
-  });
-
-  return (
-    <div className='mutate'>
-      <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
     </div>
   );
 };

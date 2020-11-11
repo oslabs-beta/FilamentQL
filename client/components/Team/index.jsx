@@ -25,7 +25,8 @@ const Team = () => {
           textAlign: "center",
         }}
       >
-        <h1>Meet the Filament Team</h1>
+        <h1>Meet the FilamentQL Team</h1>
+        <h4>Hover over each image for more information.</h4>
       </div>
       <div className='container'>
         {members.map((member) => (

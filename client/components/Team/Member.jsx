@@ -9,12 +9,12 @@ const Member = ({ member: { name, avatar, bio, github, linkedIn } }) => (
         </div>
         <ul className='social-icons'>
           <li>
-            <a href={github} target='_'>
+            <a target="_blank" href={github} target='_'>
               <i className='fab fa-github' />
             </a>
           </li>
           <li>
-            <a href={linkedIn} target='_'>
+            <a target="_blank" href={linkedIn} target='_'>
               <i className='fab fa-linkedin' />
             </a>
           </li>

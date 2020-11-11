@@ -19,9 +19,6 @@ const Navigation = () => {
       <li>
         <Link to="/demo">Demo</Link>
       </li>
-      {/* <li>
-        <Link to="/offline">Offline</Link>
-      </li> */}
       <li>
         <Link to="/team">Team</Link>
       </li>
@@ -29,10 +26,10 @@ const Navigation = () => {
         <Link to="/info">Info</Link>
       </li>
       <li>
-        <Link to="https://github.com/oslabs-beta/Filament">GitHub</Link>
+        <a target="_blank" href="https://github.com/oslabs-beta/Filament">GitHub</a>
       </li>
       <li>
-        <Link to="/info">NPM Package</Link>
+        <a target="_blank" href="https://www.npmjs.com/package/filamentql">NPM Package</a>
       </li>
     </ul>
 

@@ -3,15 +3,7 @@ $code-text: rgba(255, 255, 255, 0.947);
 
 body {
   margin: 0;
-  // color: lemonchiffon;
-  color: darkslategray;
-  background-color: #fafafa;
-  // background-color: #060e1a;
-
-  // width: 100%;
-  // height: 600px;
-  // background: url(https://images.unsplash.com/photo-1519932346171-579818908a6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80%20750w);
-
+  color: floralwhite;
 }
 
 .mainDisplay {
@@ -37,15 +29,13 @@ body {
 }
 
 .mainDisplay p {
-  color: darkslategray;
+  color: floralwhite;
   margin: 0px;
-
 }
 
 .subtitle {
-  color: darkslategray;
+  color: floralwhite;
   margin: 0px;
-
 }
 
 .developedBy {
@@ -60,11 +50,9 @@ body {
   .query-text-container {
     display: flex;
     justify-content: center;
-
     label {
       display: flex;
       flex-direction: column;
-
       h4 {
         align-self: center;
       }
@@ -109,7 +97,6 @@ body {
   display: flex;
   margin-right: 50px;
   margin-left: 20px;
-  // margin-left: -50;
 }
 
 .navUl {
@@ -118,14 +105,12 @@ body {
   border-bottom: 2px solid darkslategrey;
 
   li {
-    // text-shadow: 0 0 5px salmon;
     margin-left: 20px;
     margin-right: 20px;
     font-size: 23px;
 
     a {
-      // color: transparent;
-    color: darkslategray;
+    color:#d1d1d1;
     text-decoration: none;
     }
     a:hover {
@@ -136,7 +121,7 @@ body {
 
 .submitButton {
   background-color: lightslategray;
-  color: antiquewhite;
+  color: floralwhite;
   border: none;
   margin: 5px;
   margin-left: 0;
@@ -146,7 +131,7 @@ body {
 
 .updateButton {
   background-color: gray;
-  color: antiquewhite;
+  color: floralwhite;
   border: none;
   margin: 5px;
   margin-left: 0px;
@@ -156,7 +141,7 @@ body {
 
 .deleteButton {
   background-color: darkslategray;
-  color: antiquewhite;
+  color: floralwhite;
   border: none;
   margin: 5px;
   margin-left: 20px;
@@ -166,7 +151,7 @@ body {
 
 .fetchButton {
   background-color: gray;
-  color: antiquewhite;
+  color: floralwhite;
   border: none;
   margin: 5px;
   margin-left: 0;
@@ -185,7 +170,7 @@ body {
 
 .addFieldToQuery {
   background-color: darkslategray;
-  color: antiquewhite;
+  color: floralwhite;
   border: none;
   margin: 5px;
   margin-left: 0;
@@ -226,3 +211,33 @@ body {
   }
 }
 
+.Info_Headers {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.Info_Headers h3 {
+  width: 700px;
+  line-height: 25px;
+}
+
+.Info_Headers h4 {
+  width: 700px;
+}
+
+.Info_Headers p {
+  width: 500px;
+  margin-left: 125px;
+}
+
+.Info_Headers img {
+  flex-direction: column;
+  width: 700px;
+}
+
+.infoParentDiv {
+  display: flex;
+  justify-content: center;
+}

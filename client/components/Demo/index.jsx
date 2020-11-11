@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { mergeTwoArraysById, parseKeyInCache } from "filamentql/utils";
-import parseClientFilamentQuery from "filamentql/client/parseClientFilamentQuery";
-import Offline from "./Offline";
+import { mergeTwoArraysById, parseKeyInCache } from '../../../filament/utils';
+import parseClientFilamentQuery from '../../../filament/parseClientFilamentQuery';
+import Offline from './Offline'
 
-const offlineModeBackgroundLeft = document.getElementsByClassName(
-  "demoOverlayLeft"
-);
-const offlineModeBackgroundRight = document.getElementsByClassName(
-  "demoOverlayRight"
-);
-
-import "./Demo.scss";
+import './Demo.scss';
 
 const query = `
   query {
@@ -35,7 +28,7 @@ const queryWantToMake = `
   }
 `;
 
-// sessionStorage.clear();
+sessionStorage.clear();
 
 const Demo = () => {
   const [cache, setCache] = useState({ ...sessionStorage });
@@ -43,34 +36,20 @@ const Demo = () => {
   const [desiredQuery, setDesiredQuery] = useState(query);
   const [actualQuery, setActualQuery] = useState("");
   const [fetchingTime, setFetchingTime] = useState(0);
-  const [showRight, setShowRight] = useState(false);
 
   const keyInCache = parseKeyInCache(query);
 
   useEffect(() => {
-    if (showRight) {
-      offlineModeBackgroundRight[0].style.display = "none";
-
-      offlineModeBackgroundLeft[0].style.zIndex = 1;
-    } else {
-      offlineModeBackgroundLeft[0].style.zIndex = "none";
-      offlineModeBackgroundRight[0].style.zIndex = "1";
-    }
-
     setCache({ ...sessionStorage });
   }, [dataFromDB, sessionStorage]);
 
   const handleClick = () => {
     const [actualQuery, dataInCache] = parseClientFilamentQuery(desiredQuery);
-    console.log("dataInCache", dataInCache);
-    console.log("KEY IN CACHE:", keyInCache);
     setActualQuery(actualQuery);
 
     const startTime = performance.now();
-    // Condition: if data being queried for not in cache, go fetch
-    axios.post("/filament", { query: actualQuery, keyInCache }).then((res) => {
+    axios.post('/filament', { query: actualQuery, keyInCache }).then((res) => {
       const cacheString = sessionStorage.getItem(keyInCache);
-      console.log("res.data.data", res.data.data);
       if (cacheString) {
         const mergedData = mergeTwoArraysById(
           JSON.parse(sessionStorage.getItem(keyInCache)),
@@ -89,9 +68,6 @@ const Demo = () => {
       setDataFromDB(res.data.data[keyInCache]);
       setFetchingTime((endTime - startTime).toFixed(2));
     });
-    // Else, if data is in cache, set endtime
-    //const endTime = performance.now();
-    //setFetchingTime((endTime - startTime).toFixed(2));
   };
 
   const displayCode = (cache) => {
@@ -99,53 +75,22 @@ const Demo = () => {
     return JSON.stringify(result, null, 2);
   };
 
-  const handleShowOfflineLeftClick = () => {
-    setShowRight(false);
-    offlineModeBackgroundLeft[0].style.zIndex = "-1";
-    offlineModeBackgroundRight[0].style.zIndex = "1";
-  };
-
-  const handleShowOfflineClick = () => {
-    setShowRight(true);
-    offlineModeBackgroundRight[0].style.zIndex = "-1";
-    offlineModeBackgroundLeft[0].style.zIndex = "1";
-  };
-
   const handleUniqueFieldButtonClick = () => {
     setDesiredQuery(queryWantToMake);
   };
 
   return (
-    <div>
-      <div className='overlayLeft'>
-        <div
-          onClick={handleShowOfflineLeftClick}
-          className='demoOverlayLeft'
-        ></div>
-      </div>
-
-      <div className='overlayRight'>
-        <div
-          onClick={handleShowOfflineClick}
-          className='demoOverlayRight'
-        ></div>
-      </div>
-
-      <div
-        className='mainDemoContainer'
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "flex-start",
-          height: "80vh",
-        }}
-      >
+    <div >
+      <div className='mainDemoContainer' style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
+        height: '80vh',
+      }}>
         <div>
-          <div className='Demo'>
-            <h1 style={{ textAlign: "center" }}>
-              Filament Caching and Parsing
-            </h1>
-            <div className='query-text-container'>
+          <div className="Demo" >
+            <h1 style={{ textAlign: 'center' }}>FilamentQL Caching and Parsing</h1>
+            <div className="query-text-container">
               <label>
                 <h4>Desired Query</h4>
                 <textarea
@@ -211,7 +156,7 @@ const Demo = () => {
           </div>
         </div>
 
-        <div onClick={handleShowOfflineClick} className='mainOfflineDiv'>
+        <div className='mainOfflineDiv' >
           <Offline />
         </div>
       </div>

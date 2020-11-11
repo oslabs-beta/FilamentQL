@@ -1,13 +1,13 @@
 import React from 'react';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import TodoItem from '../components/TodoItem.jsx';
+import TodoItem from '../components/Main/TodoItem';
 
 configure({ adapter: new Adapter() });
 
 import { shallow, mount, render } from 'enzyme';
 
-describe('initial test', () => {
+xdescribe('initial test', () => {
   let wrapper;
 
   const props = {
@@ -15,20 +15,18 @@ describe('initial test', () => {
     text: 'test',
     isCompleted: false,
     number: 5,
-    toggleTodo: true
-  }
+    toggleTodo: true,
+  };
 
   beforeAll(() => {
     wrapper = shallow(<TodoItem {...props} />);
-  })
+  });
 
   it('should fail the test', () => {
-    expect(wrapper.find('button').length).toEqual(3)
-  })
+    expect(wrapper.find('button').length).toEqual(3);
+  });
 
   it('should pass the test', () => {
-    expect(wrapper.find('button').length).toEqual(2)
-
-  })
-})
-
+    expect(wrapper.find('button').length).toEqual(2);
+  });
+});

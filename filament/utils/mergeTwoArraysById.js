@@ -1,13 +1,8 @@
-const mergeTwoArraysById = (dataFromCache, dataFromServer) => {
-  const mergedData = dataFromCache.map((dataCache) => {
-    const matchedObj = dataFromServer.find(
-      (dataServer) => dataServer.id === dataCache.id
-    );
-    const newData = { ...dataCache, ...matchedObj };
-    return newData;
+const mergeTwoArraysById = (array1, array2) =>
+  array1.map((object1) => {
+    const matchedObject = array2.find((object2) => object2.id === object1.id);
+    const mergedObject = { ...object1, ...matchedObject };
+    return mergedObject;
   });
-
-  return mergedData;
-};
 
 export default mergeTwoArraysById;

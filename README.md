@@ -1,4 +1,4 @@
-<p align="left"><img src="./placeholderLogo.png" width='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
+<p align="center"><img src="./placeholderLogo.png" width='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 ## Filament
 
@@ -11,7 +11,7 @@ Filament is an easy and practical library that supports client-side and server-s
 
 #### Client-Side Caching
 
-<p align="left"><img src="./client-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
+<p align="center"><img src="./client-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
 ### Contributors
 

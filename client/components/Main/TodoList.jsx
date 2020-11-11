@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
-import TodoItem from './TodoItem';
+import TodoItem from "./TodoItem";
 
 const TodoList = ({ todos, toggleTodo }) => {
   return (
-    <div className="TodoList">
+    <div className='TodoList'>
       {todos.map((item) => (
         <TodoItem
           key={item.id}

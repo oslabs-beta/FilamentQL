@@ -3,8 +3,8 @@ import React from "react";
 import AddTodo from "./AddTodo";
 import TodoList from "./TodoList";
 
-import { useFilamentQuery } from "../../../filament";
-import { parseKeyInCache } from "../../../filament/utils";
+import { useFilamentQuery } from "filamentql/client";
+import { parseKeyInCache } from "filamentql/utils";
 
 sessionStorage.clear();
 

@@ -22,7 +22,7 @@ client
   .on("connect", () => console.log("Redis client connected"));
 
 // Filament Setup
-const filamentMiddlewareWrapper = require("../filament").default;
+const filamentMiddlewareWrapper = require("filamentql/server");
 const filamentMiddleware = filamentMiddlewareWrapper(client);
 
 // Express setup

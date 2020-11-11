@@ -1,6 +1,6 @@
-import { parseFilamentQuery } from '../hooks/utils.js'
+import parseClientFilamentQuery from '../../filament/parseClientFilamentQuery'
 
-describe('parseFilamentQuery', () => {
+describe('parseClientFilamentQuery', () => {
 
   const queryOnlyId = `
   {
@@ -47,13 +47,13 @@ describe('parseFilamentQuery', () => {
 
   })
   it('should pass test', () => {
-    const [newQuery, cacheData] = parseFilamentQuery(queryWantToMake)
-    return expect(cacheData.todos.id).toEqual(123214251)
+    const [newQuery, cacheData] = parseClientFilamentQuery(queryWantToMake)
+    return expect(cacheData.todos[0].id).toEqual(123214251)
 
   })
 
-  it('should fail the test', () => {
-    const [newQuery, cacheData] = parseFilamentQuery(queryWantToMake)
-    return expect(cacheData.todos.id).toEqual('not in the cache')
+  it('should not be in the cache', () => {
+    const [newQuery, cacheData] = parseClientFilamentQuery(queryWantToMake)
+    return expect(cacheData.todos[0].difficulty).not.toEqual('not in the cache')
   })
 })

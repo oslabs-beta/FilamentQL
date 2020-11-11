@@ -1,7 +1,7 @@
 import React from 'react';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import TodoItem from '../components/TodoItem.jsx';
+import TodoItem from '../components/Main/TodoItem.jsx';
 
 configure({ adapter: new Adapter() });
 
@@ -22,8 +22,8 @@ describe('initial test', () => {
     wrapper = shallow(<TodoItem {...props} />);
   })
 
-  it('should fail the test', () => {
-    expect(wrapper.find('button').length).toEqual(3)
+  it('should not equal 3', () => {
+    expect(wrapper.find('button').length).not.toEqual(3)
   })
 
   it('should pass the test', () => {

@@ -76,8 +76,8 @@ const Offline = () => {
 
   return (
     <div className='offlineMainDiv'>
-      {/* <h1>Currently in: {networkMode} mode</h1> */}
       <h1>Offline Mode Caching</h1>
+      <h3>Todos</h3>
       <AddTodo handleAddTodo={handleAddTodo} />
 
       {wantsUpdate && (

@@ -33,9 +33,6 @@ describe('initial server test', () => {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(9999)
-    // .end((err, res) => {
-    //   if (err) throw err;
-    // })
   })
 
   it('should pass the test', () => {
@@ -55,8 +52,5 @@ describe('initial server test', () => {
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
-    // .end((err, res) => {
-    //   if (err) throw err;
-    // })
   })
 })

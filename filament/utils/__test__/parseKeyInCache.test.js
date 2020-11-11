@@ -1,6 +1,6 @@
 import parseKeyInCache from '../parseKeyInCache';
 
-describe('parseKeyInCache', () => {
+xdescribe('parseKeyInCache', () => {
   parseKeyInCache();
   it('should', () => {});
 });

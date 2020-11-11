@@ -2,27 +2,30 @@
 
 ## Filament
 
-Filament is an easy and practical server and client-side caching library for graphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
+Filament is an easy and practical library that supports client-side and server-side caching as well as offline mutations for GraphQL, utilzing a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
 
 #### Server-Side Caching
 
-<p align="left"><img src="./server-diagram.png" width='600' height='500' style="margin-top: 5px; margin-bottom: 10px;"></p>
+<p align="center"><img src="./server-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 10px;"></p>
 
 
 #### Client-Side Caching
 
-<p align="left"><img src="./client-diagram.png" width='600' height='500' style="margin-top: 5px; margin-bottom: 5px;"></p>
+<p align="left"><img src="./Filament Client-side caching.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
 ### Contributors
 
 Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
-[Duy Nguyen](https://github.com/bobdeei), [Andrew Lovato](https://github.com/andrew-lovato), [Chan Choi](https://github.com/chanychoi93) and [Nelson Wu](https://github.com/neljson).
+- [Andrew Lovato](https://github.com/andrew-lovato)
+- [Chan Choi](https://github.com/chanychoi93)
+- [Duy Nguyen](https://github.com/bobdeei)
+- [Nelson Wu](https://github.com/neljson)
 
-An interactive demo and more information can be found at [Filament.io](https://www.google.com/)
+An interactive demo and detail information can be found at [filamentql.io](http://filamentql.io/)
 
 ## Installation
 
-### Install Redis
+### Redis
 
 Filament utilizes Redis for its server-side caching. If Redis is not already installed on your machine:
 
@@ -38,42 +41,124 @@ Filament utilizes Redis for its server-side caching. If Redis is not already ins
   - By default redis server runs on `localhost:6379`
   - To check if your redis server is working: send a ping to the redis server by entering the command `redis-cli ping`, you will get a `PONG` in response if your redis server is working properly.
 
-### Install Filament
+### Filament
+`npm install filamentql`
 
-Install the NPM package from your terminal: `npm install filament placeholder...`
+## Instructions
 
-## Implementation and Usage
+Filament comes with `filamentql/client` and `filamentql/server` in order to make all the magic happen.
 
-1. Import or require filament into your server file...
-2. Placeholder text
-3. For example, an Express server file may look like this:
+On client side, `filamentql` exposes 2 hooks:  
+- `useFilamentQuery` 
+  - helps query data from GraphQL server
+- `useFilamentMutation` 
+  - helps make mutation even though the network is offline
+
+Both abstract away how to fetch queries and mutations and automatically update state when data is returned from server.
+
+### Client Example
+
+```js
+import React, { useState } from 'react';
+import { useFilamentQuery, useFilamentMutation } from 'filamentql/client';
+
+const query = `
+  query {
+    todos {
+      id
+      text
+      isCompleted
+    }
+  }
+`;
+
+const mutation = (text) => `
+  mutation {
+    addTodo(input: { text: "${text}" }) {
+      id
+      text
+      isCompleted
+    }
+  }
+`;
+
+const App = () => {
+  const [value, setValue] = useState('');
+  const { todosQuery } = useFilamentQuery(query);
+  const [callAddTodoMutation, addTodoResponse] = useFilamentMutation(
+    mutation,
+    () => {
+      // this callback is invoked when data come back from server
+      // this is a good place to update relevant state with now new data
+      console.log(addTodoResponse.addTodo);
+    }
+  );
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    callAddTodoMutation(value);
+    setValue('')
+  };
+
+  const handleChange = (event) => setValue(event.target.value)
+
+  return (
+    <div className="App">
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={value} onChange={handleChange} />
+        <button type="submit">New todo</button>
+      </form>
+      <div>
+        {todosQuery &&
+          todosQuery.todos.map((todo) => <Todo key={todo.id} todo={todo} />)}
+      </div>
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Server Example
+
+Filament achieves the caching ability via Express middleware `/filament`. Since `useFilamentQuery` utilize caching ability, the middleware `/filament` needs to be setup in order to facilitate caching process.
 
 ```
 const express = require('express');
-const myGraphQLSchema = require('./schema/schema');
-const Filament  = require('filament')
+const { graphqlHTTP } = require('express-graphql');
+const redis = require('redis');
 
+// Redis Setup
+const client = redis.createClient();
+client
+  .on('error', (err) => console.log('Error: ' + err))
+  .on('connect', () => console.log('Redis client connected'));
+
+// Filament Setup
+const filamentMiddlewareWrapper = require('filamentql/server');
+const filamentMiddleware = filamentMiddlewareWrapper(client);
+
+// Express setup
 const app = express();
-
-// does user need to instantiate a new redis server at 6379 our will it be done automatically for them when our npm is installed?
+const PORT = 4000;
+const schema = require('./schema');
 
 app.use(express.json());
-
-app.use('/graphql',
-    Filament,
-    (req, res) => {
-    return res
-        .status(200)
-        .send(res.locals.queryResponse);
-    }
+app.use('/filament', filamentMiddleware);
+app.use(
+  '/graphql',
+  graphqlHTTP((req) => ({
+    schema,
+    graphiql: true,
+    context: {
+      req,
+    },
+  }))
 );
 
-app.listen(3000);
-
+app.listen(PORT, () => console.log(`GraphQL server is on port: ${PORT}`));
 ```
-
-4. Placeholder text
 
 ### Notes
 
-- Currently, Filament v1.0 can only cache and parse queries without mutations, arguments, variables, or directives. These requests will be queried like normal, but will not be cached.
+- Currently, Filament v1.0 can only cache and parse queries without arguments, variables, or directives

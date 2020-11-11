@@ -20,6 +20,7 @@ const App = () => (
       <Route path="/team" component={Team} />
       <Route path="/" component={Main} />
     </Switch>
+
   </div>
 );
 

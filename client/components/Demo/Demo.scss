@@ -3,9 +3,10 @@ $code-text: rgba(255, 255, 255, 0.947);
 
 body {
   margin: 0;
-  color: lemonchiffon;
-
-  background-color: #060e1a;
+  // color: lemonchiffon;
+  color: darkslategray;
+  background-color: #fafafa;
+  // background-color: #060e1a;
 
   // width: 100%;
   // height: 600px;
@@ -18,14 +19,38 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 100px;
+}
+
+.mainDisplay h1 {
+  font-size: 50px;
+}
+
+.mainDisplay h3 {
+  width: 550px;
+  text-align: center;
+  line-height: 27px;
+}
+
+.mainDisplay p {
+  color: darkslategray;
+  margin: 0px;
+
 }
 
 .subtitle {
-  color: bisque;
+  color: darkslategray;
+  margin: 0px;
+
+}
+
+.developedBy {
+  padding-top: 50px;
+  font-size: 15px;
 }
 
 .Demo {
-    border-right: 4px solid lightcoral;
+    border-right: 4px solid darkslategray;
     padding-right: 75px;
     margin-left: 50px;
   .query-text-container {
@@ -78,30 +103,45 @@ body {
 
 .mainOfflineDiv {
   display: flex;
-  margin-right: 150px;
+  margin-right: 50px;
+  margin-left: 20px;
   // margin-left: -50;
 }
 
 .navUl {
+  padding-bottom: 15px;
+  font-weight: 200;
+  border-bottom: 2px solid darkslategrey;
+
   li {
-    text-shadow: 0 0 5px salmon;
+    // text-shadow: 0 0 5px salmon;
     margin-left: 20px;
     margin-right: 20px;
     font-size: 23px;
 
     a {
       // color: transparent;
-    color: salmon;
-
+    color: darkslategray;
+    text-decoration: none;
     }
     a:hover {
-      color:antiquewhite;
+      color:gray;
     }
   }
 }
 
+.submitButton {
+  background-color: lightslategray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 0;
+  padding: 5px;
+  border-radius: 5px;
+}
+
 .updateButton {
-  background-color: dodgerblue;
+  background-color: gray;
   color: antiquewhite;
   border: none;
   margin: 5px;
@@ -111,7 +151,7 @@ body {
 }
 
 .deleteButton {
-  background-color: darkviolet;
+  background-color: darkslategray;
   color: antiquewhite;
   border: none;
   margin: 5px;
@@ -121,7 +161,7 @@ body {
 }
 
 .fetchButton {
-  background-color: dodgerblue;
+  background-color: gray;
   color: antiquewhite;
   border: none;
   margin: 5px;
@@ -139,50 +179,8 @@ body {
   justify-content: flex-start;
 }
 
-.demoOverlayLeft {
-  background-color: #060e1a;
-  opacity: .4;
-  width: 58.5%;
-  height: 100%;
-  position: absolute;
-}
-
-.demoOverlayRight {
-  background-color: #060e1a;
-  opacity: .4;
-  width: 41%;
-  height: 100%;
-  position: absolute;
-}
-
-.makeMutation button {
-  background-color: cornflowerblue;
-  color: antiquewhite;
-  border: none;
-  margin: 5px;
-  margin-left: 0;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.mutate button {
-  background-color: cornflowerblue;
-  color: antiquewhite;
-  border: none;
-  margin: 5px;
-  margin-left: 0;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.backgroundImage {
-  background: url(https://images.unsplash.com/photo-1519932346171-579818908a6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80%20750w);
-  // width: 100%;
-  // height: 100%;
-}
-
 .addFieldToQuery {
-  background-color: firebrick;
+  background-color: darkslategray;
   color: antiquewhite;
   border: none;
   margin: 5px;
@@ -190,3 +188,37 @@ body {
   padding: 10px;
   border-radius: 5px;
 }
+
+.offlineMainDiv {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+
+
+@media (max-width: 1300px) {
+  .Demo {
+    margin: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 1048px) {
+  .Demo {
+    border-right: none;
+  }
+  .mainDemoContainer {
+    flex-direction: column;
+    margin-top: 400px;
+    justify-content: center;
+  }
+  .navUl {
+    li {
+      margin-left: 5px;
+      margin-right: 5px;
+      font-size: 17px;
+    }
+  }
+}
+

@@ -58,7 +58,7 @@ Both abstract away how to fetch queries and mutations and automatically update s
 
 ### Client Example
 
-```jsx
+```JSX
 import React, { useState } from 'react';
 import { useFilamentQuery, useFilamentMutation } from 'filamentql/client';
 

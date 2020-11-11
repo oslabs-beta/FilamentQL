@@ -15,7 +15,7 @@ const AddTodo = ({ handleAddTodo }) => {
     <div>
       <form onSubmit={handleSubmit}>
         <button className='submitButton' type="submit" disabled={!value}>
-          submit
+          Add Todo
         </button>
         <input type="text" value={value} onChange={handleChange} />
       </form>

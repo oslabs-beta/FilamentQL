@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { mergeTwoArraysById, parseKeyInCache } from '../../../filament/utils';
+import useFilamentQuery from '../../../filament/hooks/useFilamentQuery.jsx'
 import parseClientFilamentQuery from '../../../filament/parseClientFilamentQuery';
 import Offline from './Offline'
 
@@ -32,7 +33,7 @@ const queryWantToMake = `
   }
 `;
 
-sessionStorage.clear();
+// sessionStorage.clear();
 
 const Demo = () => {
   const [cache, setCache] = useState({ ...sessionStorage });
@@ -41,9 +42,11 @@ const Demo = () => {
   const [actualQuery, setActualQuery] = useState('');
   const [fetchingTime, setFetchingTime] = useState(0);
   const [showRight, setShowRight] = useState(false);
+
   const keyInCache = parseKeyInCache(query);
 
   useEffect(() => {
+
     if (showRight) {
       offlineModeBackgroundRight[0].style.display = 'none'
 
@@ -52,6 +55,7 @@ const Demo = () => {
       offlineModeBackgroundLeft[0].style.zIndex = 'none'
       offlineModeBackgroundRight[0].style.zIndex = '1'
     }
+
     setCache({ ...sessionStorage });
   }, [dataFromDB, sessionStorage]);
 

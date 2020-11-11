@@ -6,8 +6,20 @@ import TodoList from './TodoList';
 import { useFilamentQuery } from '../../../filament';
 import { parseKeyInCache } from '../../../filament/utils';
 
-const Main = () => {
+sessionStorage.clear();
 
+const query = `
+  {
+    todos { 
+      id
+      text
+      isCompleted
+    }
+  }
+`;
+
+const Main = () => {
+  const { state, makeQuery } = useFilamentQuery(query, []);
   return (
     <div className='mainDisplay'>
       <h1 className='filamentTitle'>Filament</h1>
@@ -18,3 +30,5 @@ const Main = () => {
 };
 
 export default Main;
+
+

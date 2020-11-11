@@ -26,10 +26,10 @@ const Navigation = () => {
         <Link to="/info">Info</Link>
       </li>
       <li>
-        <a href="https://github.com/oslabs-beta/Filament">GitHub</a>
+        <a target="_blank" href="https://github.com/oslabs-beta/Filament">GitHub</a>
       </li>
       <li>
-        <a href="/info">NPM Package</a>
+        <a target="_blank" href="https://www.npmjs.com/package/filamentql">NPM Package</a>
       </li>
     </ul>
 

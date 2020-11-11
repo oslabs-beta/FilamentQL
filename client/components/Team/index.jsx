@@ -1,55 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+import "./Team.scss";
+import Member from "./Member";
+import { getMembersQuery } from "../../query";
 
 const Team = () => {
-  return (
-    <div>
-      <div className="Header" style={{
-        display: 'flex',
-        flexDirection: 'column',
-        textAlign: 'center'
-      }}>
-        <h1>Meet the Filament Team</h1>
-      </div>
-      <div className="container">
-        <div className="card-wrapper">
-          <div className="card">
-            <div className="card-image">
-              <img src="https://image.ibb.co/dUTfmJ/profile_img.jpg" alt="profile one" />
-            </div>
-            <ul className="social-icons">
-              <li>
-                <a href="">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  <i className="fab fa-instagram"></i>
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  <i className="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  <i className="fab fa-dribbble"></i>
-                </a>
-              </li>
-            </ul>
+  const [members, setMembers] = useState([]);
 
-            <div className="details">
-              <h2>John Smith
-                <br />
-                <span className="job-title">UI Developer</span>
-              </h2>
-            </div>
-          </div>
-        </div>
+  useEffect(() => {
+    axios.post("/graphql", { query: getMembersQuery }).then((response) => {
+      const { members } = response.data.data;
+      setMembers(members);
+    });
+  }, []);
+
+  return (
+    <div className='Team'>
+      <div
+        className='Header'
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          textAlign: "center",
+        }}
+      >
+        <h1>Meet the FilamentQL Team</h1>
+        <h4>Hover over each image for more information.</h4>
+      </div>
+      <div className='container'>
+        {members.map((member) => (
+          <Member key={member.id} member={member} />
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Team;

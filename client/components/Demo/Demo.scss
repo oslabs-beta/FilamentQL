@@ -212,3 +212,33 @@ body {
   }
 }
 
+.Info_Headers {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.Info_Headers h3 {
+  width: 700px;
+  line-height: 25px;
+}
+
+.Info_Headers h4 {
+  width: 700px;
+}
+
+.Info_Headers p {
+  width: 500px;
+  margin-left: 125px;
+}
+
+.Info_Headers img {
+  flex-direction: column;
+  width: 700px;
+}
+
+.infoParentDiv {
+  display: flex;
+  justify-content: center;
+}

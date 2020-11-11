@@ -3,6 +3,11 @@ import axios from 'axios';
 
 import { mergeTwoArraysById, parseKeyInCache } from '../../../filament/utils';
 import parseClientFilamentQuery from '../../../filament/parseClientFilamentQuery';
+import Offline from './Offline'
+
+const offlineModeBackgroundLeft = document.getElementsByClassName('demoOverlayLeft');
+const offlineModeBackgroundRight = document.getElementsByClassName('demoOverlayRight');
+
 
 import './Demo.scss';
 
@@ -21,6 +26,7 @@ const queryWantToMake = `
     todos {
       id
       text
+      isCompleted
       difficulty
     }
   }
@@ -34,9 +40,17 @@ const Demo = () => {
   const [desiredQuery, setDesiredQuery] = useState(query);
   const [actualQuery, setActualQuery] = useState('');
   const [fetchingTime, setFetchingTime] = useState(0);
+  const [showRight, setShowRight] = useState(false);
   const keyInCache = parseKeyInCache(query);
 
   useEffect(() => {
+    if (showRight) {
+      offlineModeBackgroundRight[0].style.zIndex = '-1'
+      offlineModeBackgroundLeft[0].style.zIndex = 1
+    } else {
+      offlineModeBackgroundLeft[0].style.zIndex = '-1'
+      offlineModeBackgroundRight[0].style.zIndex = '1'
+    }
     setCache({ ...sessionStorage });
   }, [dataFromDB, sessionStorage]);
 
@@ -79,71 +93,115 @@ const Demo = () => {
     return JSON.stringify(result, null, 2);
   };
 
+
+  const handleShowOfflineLeftClick = () => {
+    setShowRight(false)
+    offlineModeBackgroundLeft[0].style.zIndex = '-1'
+    offlineModeBackgroundRight[0].style.zIndex = '1'
+  }
+
+  const handleShowOfflineClick = () => {
+    setShowRight(true)
+    offlineModeBackgroundRight[0].style.zIndex = '-1'
+    offlineModeBackgroundLeft[0].style.zIndex = '1'
+  }
+
+  const handleUniqueFieldButtonClick = () => {
+    setDesiredQuery(queryWantToMake)
+  }
+
+
   return (
-    <div
-      style={{
+    <div>
+
+      <div className='overlayLeft'>
+        <div onClick={handleShowOfflineLeftClick} className='demoOverlayLeft'>
+
+        </div>
+      </div>
+
+      <div className='overlayRight'>
+        <div onClick={handleShowOfflineClick} className='demoOverlayRight'>
+
+        </div>
+      </div>
+
+
+      <div style={{
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
         height: '80vh',
-      }}
-    >
-      <div className="Demo">
-        <h1 style={{ textAlign: 'center' }}>Filament MVP Demo</h1>
-        <div className="query-text-container">
-          <label>
-            <h4>Desired Query</h4>
-            <textarea
-              cols="30"
-              rows="10"
-              value={desiredQuery}
-              onChange={({ target: { value } }) => setDesiredQuery(value)}
-            />
-          </label>
+      }}>
 
-          <label>
-            <h4>Actual Query To Be Fetched</h4>
-            <textarea
-              cols="30"
-              rows="10"
-              value={actualQuery}
-              onChange={({ target: { value } }) => setActualQuery(value)}
-            />
-          </label>
-        </div>
+        <div>
+          <div className="Demo" >
+            <h1 style={{ textAlign: 'center' }}>Filament MVP Demo</h1>
+            <div className="query-text-container">
+              <label>
+                <h4>Desired Query</h4>
+                <textarea
+                  cols="30"
+                  rows="10"
+                  value={desiredQuery}
+                  onChange={({ target: { value } }) => setDesiredQuery(value)}
+                />
+              </label>
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1rem',
-          }}
-        >
-          <button onClick={handleClick} disabled={!desiredQuery}>
-            Fetch
-          </button>
-        </div>
+              <label>
+                <h4>Actual Query To Be Fetched</h4>
+                <textarea
+                  cols="30"
+                  rows="10"
+                  value={actualQuery}
+                  onChange={({ target: { value } }) => setActualQuery(value)}
+                />
+              </label>
+            </div>
 
-        <div style={{ display: 'flex' }}>
-          <div className="cache-div">
-            <h4>Data in cache</h4>
-            <div className="cache-view">
-              <pre>
-                <code>{displayCode(cache[keyInCache] || null)}</code>
-              </pre>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '1rem',
+              }}
+            >
+              <button className='addFieldToQuery' onClick={handleUniqueFieldButtonClick}>Add Unique Field to Query</button>
+              <button className='fetchButton' onClick={handleClick} disabled={!desiredQuery}>
+                Fetch
+              </button>
+              {/* <button>Reset</button> */}
+            </div>
+
+            <div className='cacheReturnDataDiv' style={{ display: 'flex' }}>
+              <div className="cache-div">
+                <h4>Data in cache</h4>
+                <div className="cache-view">
+                  <pre>
+                    <code>{displayCode(cache[keyInCache] || null)}</code>
+                  </pre>
+                </div>
+              </div>
+              <div className="fetched-div">
+                <h4>Data fetched – Took {fetchingTime} ms</h4>
+                <div className="DB-view">
+                  <pre>
+                    <code>{displayCode(dataFromDB)}</code>
+                  </pre>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="fetched-div">
-            <h4>Data fetched – Took {fetchingTime} ms</h4>
-            <div className="DB-view">
-              <pre>
-                <code>{displayCode(dataFromDB)}</code>
-              </pre>
-            </div>
-          </div>
+        </div>
+
+        <div onClick={handleShowOfflineClick} className='mainOfflineDiv' >
+          <Offline />
         </div>
       </div>
     </div>
+
+
+
   );
 };
 

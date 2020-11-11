@@ -29,7 +29,7 @@ const Navigation = () => {
         <Link to="/info">Info</Link>
       </li>
       <li>
-        <Link to="https://github.com/oslabs-beta/Filament">GitHub</Link>
+        <a href="https://github.com/oslabs-beta/Filament">GitHub</a>
       </li>
       <li>
         <Link to="/info">NPM Package</Link>

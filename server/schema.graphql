@@ -4,9 +4,21 @@ type Todo {
   isCompleted: Boolean!
   difficulty: Int!
 }
+
+type Member {
+  id: ID!
+  name: String!
+  avatar: String!
+  bio: String!
+  github: String!
+  linkedIn: String!
+}
+
 type Query {
   todos: [Todo!]!
+  members: [Member!]!
 }
+
 input addTodoInput {
   id: ID
   text: String!
@@ -21,6 +33,7 @@ input updateTodoInput {
 input deleteTodoInput {
   id: ID!
 }
+
 type Mutation {
   addTodo(input: addTodoInput!): Todo
   updateTodo(input: updateTodoInput!): Todo

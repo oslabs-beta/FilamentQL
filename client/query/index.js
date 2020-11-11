@@ -8,6 +8,19 @@ export const getTodosQuery = `
   }
 `;
 
+export const getMembersQuery = `
+  query {
+    members {
+      id
+      name
+      avatar
+      bio
+      github
+      linkedIn
+    }
+  }
+`;
+
 export const addTodoMutation = (value) => `
   mutation {
     addTodo(input: { text: "${value}" }){

@@ -20,14 +20,18 @@ body {
   max-width: 900px;
   display: flex;
   flex-wrap: wrap;
-  // justify-content: space-evenly;
+  justify-content: space-evenly;
   margin: 0 auto;
 }
 
 .card-wrapper {
-  width: 400px;
+  width: 350px;
   height: 500px;
   position: relative;
+}
+
+.card-container {
+  width: 350px;
 }
 
 .card {
@@ -137,7 +141,7 @@ body {
 .details {
   position: absolute;
   bottom: 0;
-  left: -1%;
+  left: -3%;
   background: #fff;
   width: 100%;
   height: 120px;

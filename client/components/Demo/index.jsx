@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import { mergeTwoArraysById, parseKeyInCache } from '../../../filament/utils';
 import parseClientFilamentQuery from '../../../filament/parseClientFilamentQuery';
@@ -34,7 +34,7 @@ const Demo = () => {
   const [cache, setCache] = useState({ ...sessionStorage });
   const [dataFromDB, setDataFromDB] = useState(null);
   const [desiredQuery, setDesiredQuery] = useState(query);
-  const [actualQuery, setActualQuery] = useState('');
+  const [actualQuery, setActualQuery] = useState("");
   const [fetchingTime, setFetchingTime] = useState(0);
 
   const keyInCache = parseKeyInCache(query);
@@ -71,14 +71,13 @@ const Demo = () => {
   };
 
   const displayCode = (cache) => {
-    const result = typeof cache === 'string' ? JSON.parse(cache) : cache;
+    const result = typeof cache === "string" ? JSON.parse(cache) : cache;
     return JSON.stringify(result, null, 2);
   };
 
   const handleUniqueFieldButtonClick = () => {
-    setDesiredQuery(queryWantToMake)
-  }
-
+    setDesiredQuery(queryWantToMake);
+  };
 
   return (
     <div >
@@ -95,8 +94,8 @@ const Demo = () => {
               <label>
                 <h4>Desired Query</h4>
                 <textarea
-                  cols="30"
-                  rows="10"
+                  cols='30'
+                  rows='10'
                   value={desiredQuery}
                   onChange={({ target: { value } }) => setDesiredQuery(value)}
                 />
@@ -105,8 +104,8 @@ const Demo = () => {
               <label>
                 <h4>Actual Query To Be Fetched</h4>
                 <textarea
-                  cols="30"
-                  rows="10"
+                  cols='30'
+                  rows='10'
                   value={actualQuery}
                   onChange={({ target: { value } }) => setActualQuery(value)}
                 />
@@ -115,30 +114,39 @@ const Demo = () => {
 
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '1rem',
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "1rem",
               }}
             >
-              <button className='addFieldToQuery' onClick={handleUniqueFieldButtonClick}>Add Unique Field to Query</button>
-              <button className='fetchButton' onClick={handleClick} disabled={!desiredQuery}>
+              <button
+                className='addFieldToQuery'
+                onClick={handleUniqueFieldButtonClick}
+              >
+                Add Unique Field to Query
+              </button>
+              <button
+                className='fetchButton'
+                onClick={handleClick}
+                disabled={!desiredQuery}
+              >
                 Fetch
               </button>
               {/* <button>Reset</button> */}
             </div>
 
-            <div className='cacheReturnDataDiv' style={{ display: 'flex' }}>
-              <div className="cache-div">
+            <div className='cacheReturnDataDiv' style={{ display: "flex" }}>
+              <div className='cache-div'>
                 <h4>Data in cache</h4>
-                <div className="cache-view">
+                <div className='cache-view'>
                   <pre>
                     <code>{displayCode(cache[keyInCache] || null)}</code>
                   </pre>
                 </div>
               </div>
-              <div className="fetched-div">
+              <div className='fetched-div'>
                 <h4>Data fetched – Took {fetchingTime} ms</h4>
-                <div className="DB-view">
+                <div className='DB-view'>
                   <pre>
                     <code>{displayCode(dataFromDB)}</code>
                   </pre>

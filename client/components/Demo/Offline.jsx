@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import { useFilamentMutation } from '../../../filament';
+import { useFilamentMutation } from "filamentql/client";
 
 import {
   getTodosQuery,
   addTodoMutation,
   deleteTodoMutation,
   updateTodoMutation,
-} from '../../query';
+} from "../../query";
 
-import UpdateTodo from './UpdateTodo';
-import TodoList from './TodoList';
-import AddTodo from './AddTodo';
+import UpdateTodo from "./UpdateTodo";
+import TodoList from "./TodoList";
+import AddTodo from "./AddTodo";
 
 const Offline = () => {
-  const [updatedText, setUpdated] = useState('');
+  const [updatedText, setUpdated] = useState("");
   const [todoIdToUpdate, setTodoIdToUpdate] = useState(null);
   const [wantsUpdate, setWantsUpdate] = useState(false);
   const [todos, setTodos] = useState([]);
-  const [networkMode, setNetworkMode] = useState('');
+  const [networkMode, setNetworkMode] = useState("");
 
   const [callAddTodoMutation, addTodoResponse] = useFilamentMutation(
     addTodoMutation,
@@ -32,13 +32,13 @@ const Offline = () => {
   const [callUpdateTodoMutation] = useFilamentMutation(updateTodoMutation);
 
   useEffect(() => {
-    if (navigator.onLine) setNetworkMode('Online');
-    else setNetworkMode('Offline');
+    if (navigator.onLine) setNetworkMode("Online");
+    else setNetworkMode("Offline");
   }, [navigator.onLine]);
 
   useEffect(() => {
     axios
-      .post('/graphql', { query: getTodosQuery })
+      .post("/graphql", { query: getTodosQuery })
       .then((response) => setTodos(response.data.data.todos));
   }, []);
 
@@ -102,7 +102,9 @@ const Offline = () => {
           <li>Set to 'Offline'</li>
           <li>Make a change to the Todo List</li>
           <li>Nothing will show up, but it has been added to the cache</li>
-          <li>Check this by going to the dev console and typing 'sessionStorage'</li>
+          <li>
+            Check this by going to the dev console and typing 'sessionStorage'
+          </li>
           <li>Set Network back to 'Online'</li>
           <li>The new todo will show up in the list!</li>
         </ul>

@@ -19,9 +19,6 @@ const Navigation = () => {
       <li>
         <Link to="/demo">Demo</Link>
       </li>
-      {/* <li>
-        <Link to="/offline">Offline</Link>
-      </li> */}
       <li>
         <Link to="/team">Team</Link>
       </li>
@@ -32,7 +29,7 @@ const Navigation = () => {
         <a href="https://github.com/oslabs-beta/Filament">GitHub</a>
       </li>
       <li>
-        <Link to="/info">NPM Package</Link>
+        <a href="/info">NPM Package</a>
       </li>
     </ul>
 

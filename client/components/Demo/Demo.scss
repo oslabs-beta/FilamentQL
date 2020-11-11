@@ -1,7 +1,58 @@
 $code-editorBG: #072437;
 $code-text: rgba(255, 255, 255, 0.947);
 
+body {
+  margin: 0;
+  // color: lemonchiffon;
+  color: darkslategray;
+  background-color: #fafafa;
+  // background-color: #060e1a;
+
+  // width: 100%;
+  // height: 600px;
+  // background: url(https://images.unsplash.com/photo-1519932346171-579818908a6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80%20750w);
+
+}
+
+.mainDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 100px;
+}
+
+.mainDisplay h1 {
+  font-size: 50px;
+}
+
+.mainDisplay h3 {
+  width: 550px;
+  text-align: center;
+  line-height: 27px;
+}
+
+.mainDisplay p {
+  color: darkslategray;
+  margin: 0px;
+
+}
+
+.subtitle {
+  color: darkslategray;
+  margin: 0px;
+
+}
+
+.developedBy {
+  padding-top: 50px;
+  font-size: 15px;
+}
+
 .Demo {
+    border-right: 4px solid darkslategray;
+    padding-right: 75px;
+    margin-left: 50px;
   .query-text-container {
     display: flex;
     justify-content: center;
@@ -20,7 +71,7 @@ $code-text: rgba(255, 255, 255, 0.947);
 .DB-view {
   background: $code-editorBG;
   color: $code-text;
-  width: 400px;
+  width: 320px;
   height: 30vh;
   overflow-y: scroll;
 }
@@ -28,7 +79,7 @@ $code-text: rgba(255, 255, 255, 0.947);
 .cache-view {
   background: $code-editorBG;
   color: $code-text;
-  width: 400px;
+  width: 320px;
   height: 30vh;
   overflow-y: scroll;
 }
@@ -49,3 +100,125 @@ $code-text: rgba(255, 255, 255, 0.947);
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.mainOfflineDiv {
+  display: flex;
+  margin-right: 50px;
+  margin-left: 20px;
+  // margin-left: -50;
+}
+
+.navUl {
+  padding-bottom: 15px;
+  font-weight: 200;
+  border-bottom: 2px solid darkslategrey;
+
+  li {
+    // text-shadow: 0 0 5px salmon;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 23px;
+
+    a {
+      // color: transparent;
+    color: darkslategray;
+    text-decoration: none;
+    }
+    a:hover {
+      color:gray;
+    }
+  }
+}
+
+.submitButton {
+  background-color: lightslategray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 0;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.updateButton {
+  background-color: gray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 0px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.deleteButton {
+  background-color: darkslategray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 20px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.fetchButton {
+  background-color: gray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.overlayRight {
+  display: flex;
+  justify-content: flex-end;
+}
+.overlayLeft {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.addFieldToQuery {
+  background-color: darkslategray;
+  color: antiquewhite;
+  border: none;
+  margin: 5px;
+  margin-left: 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.offlineMainDiv {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+
+
+@media (max-width: 1300px) {
+  .Demo {
+    margin: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 1048px) {
+  .Demo {
+    border-right: none;
+  }
+  .mainDemoContainer {
+    flex-direction: column;
+    margin-top: 400px;
+    justify-content: center;
+  }
+  .navUl {
+    li {
+      margin-left: 5px;
+      margin-right: 5px;
+      font-size: 17px;
+    }
+  }
+}
+

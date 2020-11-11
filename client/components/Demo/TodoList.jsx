@@ -6,8 +6,8 @@ const OfflineList = ({ todos, handleDelete, handleUpdate }) => (
       {todos.map((todo) => (
         <li key={todo.id}>
           {todo.text}
-          <button onClick={() => handleDelete(todo.id)}>Delete</button>
-          <button onClick={() => handleUpdate(todo.id, todo.text)}>
+          <button className='deleteButton' onClick={() => handleDelete(todo.id)}>Delete</button>
+          <button className='updateButton' onClick={() => handleUpdate(todo.id, todo.text)}>
             Update
           </button>
         </li>

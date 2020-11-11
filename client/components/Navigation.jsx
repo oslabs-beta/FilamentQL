@@ -10,6 +10,7 @@ const Navigation = () => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       listStyleType: 'none',
+      textDecoration: 'none'
 
     }}>
       <li>
@@ -28,7 +29,7 @@ const Navigation = () => {
         <Link to="/info">Info</Link>
       </li>
       <li>
-        <Link to="/info">GitHub</Link>
+        <Link to="https://github.com/oslabs-beta/Filament">GitHub</Link>
       </li>
       <li>
         <Link to="/info">NPM Package</Link>

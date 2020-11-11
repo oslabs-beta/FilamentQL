@@ -100,11 +100,19 @@ const Offline = () => {
 };
 
 const Example = () => {
-  const [call, data] = useFilamentMutation(addTodoMutation, () => {});
+  const [call, data] = useFilamentMutation(addTodoMutation, () => { });
 
   return (
-    <div>
-      <button onClick={() => call('just do it!')}>Make mutation</button>
+    <div className='makeMutation'>
+      <div>
+        <h3>Set Browser Tab to Offline</h3>
+        <ul>
+          <li>Open Dev Tools</li>
+          <li>Go to Network Tab</li>
+          <li>Look for Dropdown 'Online'</li>
+          <li>Set to 'Offline'</li>
+        </ul>
+      </div>
       <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
     </div>
   );
@@ -116,9 +124,10 @@ const Example2 = () => {
   });
 
   return (
-    <div>
-      <button onClick={() => call('nooo!')}>Mutate!</button>
+    <div className='mutate'>
       <pre>{data && JSON.stringify(data.addTodo, 2, null)}</pre>
+
+
     </div>
   );
 };

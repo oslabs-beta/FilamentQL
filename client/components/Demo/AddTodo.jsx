@@ -14,7 +14,7 @@ const AddTodo = ({ handleAddTodo }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <button type="submit" disabled={!value}>
+        <button className='submitButton' type="submit" disabled={!value}>
           submit
         </button>
         <input type="text" value={value} onChange={handleChange} />

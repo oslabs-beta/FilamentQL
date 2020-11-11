@@ -45,10 +45,11 @@ const Demo = () => {
 
   useEffect(() => {
     if (showRight) {
-      offlineModeBackgroundRight[0].style.zIndex = '-1'
+      offlineModeBackgroundRight[0].style.display = 'none'
+
       offlineModeBackgroundLeft[0].style.zIndex = 1
     } else {
-      offlineModeBackgroundLeft[0].style.zIndex = '-1'
+      offlineModeBackgroundLeft[0].style.zIndex = 'none'
       offlineModeBackgroundRight[0].style.zIndex = '1'
     }
     setCache({ ...sessionStorage });
@@ -112,7 +113,7 @@ const Demo = () => {
 
 
   return (
-    <div>
+    <div >
 
       <div className='overlayLeft'>
         <div onClick={handleShowOfflineLeftClick} className='demoOverlayLeft'>
@@ -127,7 +128,7 @@ const Demo = () => {
       </div>
 
 
-      <div style={{
+      <div className='mainDemoContainer' style={{
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'flex-start',
@@ -136,7 +137,7 @@ const Demo = () => {
 
         <div>
           <div className="Demo" >
-            <h1 style={{ textAlign: 'center' }}>Filament MVP Demo</h1>
+            <h1 style={{ textAlign: 'center' }}>Filament Caching and Parsing</h1>
             <div className="query-text-container">
               <label>
                 <h4>Desired Query</h4>

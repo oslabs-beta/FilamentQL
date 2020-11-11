@@ -123,7 +123,7 @@ export default App;
 
 Filament achieves the caching ability via Express middleware `/filament`. Since `useFilamentQuery` utilize caching ability, the middleware `/filament` needs to be setup in order to facilitate caching process.
 
-```
+```js
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const redis = require('redis');

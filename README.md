@@ -1,4 +1,4 @@
-<p align="center"><img src="./logo.jpg" width='400' style="margin-top: 10px; margin-bottom: -10px;"></p>
+<p align="center"><img src="./logoBig.jpg" width='400' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
 ## FilamentQL
 

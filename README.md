@@ -94,7 +94,7 @@ const mutation = (text) => `
 
 const App = () => {
   const [value, setValue] = useState('');
-  const { todosQuery } = useFilamentQuery(query);
+  const { state: todosQuery } = useFilamentQuery(query);
   const [callAddTodoMutation, addTodoResponse] = useFilamentMutation(
     mutation,
     () => {

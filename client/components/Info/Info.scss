@@ -1,0 +1,11 @@
+.Info_Headers {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 1500ms;
+  -webkit-animation-delay: 200ms;
+  animation-delay: 200ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}

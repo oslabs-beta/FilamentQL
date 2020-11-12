@@ -1,5 +1,6 @@
 /**** Sass Variables ****/
-$bodyFont: "Open Sans", sans-serif;
+// $bodyFont: 'Open Sans', sans-serif;
+$bodyFont: Arial, Helvetica, sans-serif;
 
 // * {
 //   padding: 0;
@@ -9,11 +10,19 @@ $bodyFont: "Open Sans", sans-serif;
 .bio {
   display: flex;
   flex-wrap: wrap;
+  animation: fadeIn ease 1400ms;
+  -webkit-animation: fadeIn ease 1400ms;
+  -webkit-animation-delay: 500ms;
+  animation-delay: 500ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 body {
   font-family: $bodyFont;
-  background: #333;
+  background-color: #333;
+  // background-color: #12232e;
+  // background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
 }
 
 .container {
@@ -22,6 +31,12 @@ body {
   flex-wrap: wrap;
   justify-content: space-evenly;
   margin: 0 auto;
+  animation: fadeIn ease 1400ms;
+  -webkit-animation: fadeIn ease 1400ms;
+  -webkit-animation-delay: 310ms;
+  animation-delay: 310ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .card-wrapper {
@@ -69,6 +84,14 @@ body {
   transition: all 0.9s;
 }
 
+.Header {
+  animation: fadeIn ease 1s;
+  -webkit-animation: fadeIn ease 1s;
+  -webkit-animation-delay: 100ms;
+  animation-delay: 100ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
 /**** Social Icons *****/
 
 .social-icons {
@@ -152,6 +175,7 @@ body {
     margin: 50px 0;
     padding: 0;
     text-align: center;
+    color: #333;
 
     .job-title {
       font-size: 1rem;
@@ -159,5 +183,50 @@ body {
       color: #333;
       font-weight: 300;
     }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

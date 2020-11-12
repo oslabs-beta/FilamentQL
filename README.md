@@ -1,18 +1,28 @@
 <p align="center"><img src="./placeholderLogo.png" width='100' style="margin-top: 10px; margin-bottom: -10px;"></p>
 
-## Filament
+## FilamentQL
 
-Filament is an easy and practical library that supports client-side and server-side caching as well as offline mutations for GraphQL, utilzing a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
+FilamentQL is an easy and practical library that supports client-side and server-side caching as well as offline mutations for GraphQL, utilzing a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
 
 #### Server-Side Caching
+
+On the server-side, FilamentQL provides a GraphQL endpoint for your Express server with user-defined type definitions and resolvers, and creates a caching layer via a local Redis instance. When a client makes a request, FilamentQL checks the Redis cache for any previously stored data that matches the request. Through a parsing algorithm, FilamentQL then takes the incoming query and identifies any dissimilarities, and makes a subsequent query for just those dissimilarities to the database. Whenever possible, FilamentQL merges data coming back from the database with data from Redis cache and sends it back to the client:
 
 <p align="center"><img src="./server-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 10px;"></p>
 
 
 #### Client-Side Caching
 
+On the client-side, FilamentQL behaves similarly. For its local cache implementation, FilamentQL utilizes session storage, a built-in property on the browser's window object, which allows data to persist throughout page refreshes.
+
 <p align="center"><img src="./client-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
+### Offline Mode
+
+FilamentQL also supports an offline mode. If the user gets disconnected from the server, all mutations made when the internet is down will be stored in a queue. At a set interval, FilamentQL checks if the network is back online. Whenever the user is back online, FilamentQL dequeues and sends each mutation to the server. Subsequently, the data that comes back from server will update the state and re-render the frontend components. What the user experiences and sees on their end is a seamless re-syncing of information when they come back online.
+
+ <p align="center"><img src="./offline-diagram.png" width='400' height='400' style="margin-top: 5px; margin-bottom: 5px;"></p>
+ 
 ### Contributors
 
 Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by

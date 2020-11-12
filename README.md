@@ -24,7 +24,7 @@ FilamentQL also supports an offline mode. If the user gets disconnected from the
  
 ### Contributors
 
-Filament is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
+FilamentQL is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
 - [Andrew Lovato](https://github.com/andrew-lovato)
 - [Chan Choi](https://github.com/chanychoi93)
 - [Duy Nguyen](https://github.com/bobdeei)
@@ -36,7 +36,7 @@ An interactive demo and detail information can be found at [filamentql.io](http:
 
 ### Redis
 
-Filament utilizes Redis for its server-side caching. If Redis is not already installed on your machine:
+FilamentQL utilizes Redis for its server-side caching. If Redis is not already installed on your machine:
 
 - Install on Mac using Homebrew:
   - In the terminal, enter `brew install redis`
@@ -50,12 +50,12 @@ Filament utilizes Redis for its server-side caching. If Redis is not already ins
   - By default redis server runs on `localhost:6379`
   - To check if your redis server is working: send a ping to the redis server by entering the command `redis-cli ping`, you will get a `PONG` in response if your redis server is working properly.
 
-### Filament
+### FilamentQL
 `npm install filamentql`
 
 ## Instructions
 
-Filament comes with `filamentql/client` and `filamentql/server` in order to make all the magic happen.
+FilamentQL comes with `filamentql/client` and `filamentql/server` in order to make all the magic happen.
 
 On client side, `filamentql` exposes 2 hooks:  
 - `useFilamentQuery` 
@@ -130,7 +130,7 @@ export default App;
 
 ### Server Example
 
-Filament achieves the caching ability via Express middleware `/filament`. Since `useFilamentQuery` utilize caching ability, the middleware `/filament` needs to be setup in order to facilitate caching process.
+FilamentQL achieves the caching ability via Express middleware `/filament`. Since `useFilamentQuery` utilize caching ability, the middleware `/filament` needs to be setup in order to facilitate caching process.
 
 ```js
 const express = require('express');
@@ -143,7 +143,7 @@ client
   .on('error', (err) => console.log('Error: ' + err))
   .on('connect', () => console.log('Redis client connected'));
 
-// Filament Setup
+// FilamentQL Setup
 const filamentMiddlewareWrapper = require('filamentql/server');
 const filamentMiddleware = filamentMiddlewareWrapper(client);
 
@@ -170,4 +170,4 @@ app.listen(PORT, () => console.log(`GraphQL server is on port: ${PORT}`));
 
 ### Notes
 
-- Currently, Filament v1.0 can only cache and parse queries without arguments, variables, or directives
+- Currently, FilamentQL v1.0 can only cache and parse queries without arguments, variables, or directives

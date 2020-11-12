@@ -132,7 +132,11 @@ export default App;
 
 ### Server Example
 
-FilamentQL achieves the caching ability via Express middleware `/filament`. Since `useFilamentQuery` utilize caching ability, the middleware `/filament` needs to be setup in order to facilitate caching process.
+FilamentQL achieves the caching ability via Express middleware `/filament`. This middleware will determine if it needs to talk to `/graphql` or just returns the data from cache. 
+
+Since `useFilamentQuery` under the hood will send all queries to `/filament`, the middleware `/filament` needs to be setup in order to facilitate caching process.
+
+And make sure to mount your GraphQL server at route `/graphql`.
 
 ```js
 const express = require('express');

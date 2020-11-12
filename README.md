@@ -98,8 +98,8 @@ const App = () => {
   const [callAddTodoMutation, addTodoResponse] = useFilamentMutation(
     mutation,
     () => {
-      // this callback is invoked when data come back from server
-      // this is a good place to update relevant state with now new data
+      // this callback is invoked when data is returned from server
+      // this is a good place to update relevant state now with new data
       console.log(addTodoResponse.addTodo);
     }
   );

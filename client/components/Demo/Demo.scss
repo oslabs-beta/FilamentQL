@@ -11,11 +11,17 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 100px;
+  margin-top: 200px;
 }
 
 .mainDisplay h1 {
   font-size: 50px;
+  animation: fadeIn ease 2000ms;
+  -webkit-animation: fadeIn ease 2000ms;
+  -webkit-animation-delay: 200ms;
+  animation-delay: 200ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .mainDisplay h3 {
@@ -36,17 +42,75 @@ body {
 .subtitle {
   color: floralwhite;
   margin: 0px;
+  // opacity: 0;
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 2s;
+  -webkit-animation-delay: 500ms;
+  animation-delay: 500ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .developedBy {
   padding-top: 50px;
   font-size: 15px;
+  animation: fadeIn ease 2s;
+  -webkit-animation: fadeIn ease 2s;
+  -webkit-animation-delay: 800ms;
+  animation-delay: 800ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .Demo {
-    border-right: 4px solid darkslategray;
-    padding-right: 75px;
-    margin-left: 50px;
+  border-right: 4px solid darkslategray;
+  padding-right: 75px;
+  margin-left: 50px;
   .query-text-container {
     display: flex;
     justify-content: center;
@@ -58,6 +122,12 @@ body {
       }
     }
   }
+  animation: fadeIn ease 2000ms;
+  -webkit-animation: fadeIn ease 2000ms;
+  -webkit-animation-delay: 120ms;
+  animation-delay: 120ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .DB-view {
@@ -66,6 +136,8 @@ body {
   width: 320px;
   height: 30vh;
   overflow-y: scroll;
+  border-radius: 5px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
 }
 
 .cache-view {
@@ -74,6 +146,8 @@ body {
   width: 320px;
   height: 30vh;
   overflow-y: scroll;
+  border-radius: 5px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.6);
 }
 
 .fetched-div {
@@ -97,6 +171,12 @@ body {
   display: flex;
   margin-right: 50px;
   margin-left: 20px;
+  animation: fadeIn ease 2000ms;
+  -webkit-animation: fadeIn ease 2000ms;
+  -webkit-animation-delay: 500ms;
+  animation-delay: 500ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .navUl {
@@ -110,11 +190,11 @@ body {
     font-size: 23px;
 
     a {
-    color:#d1d1d1;
-    text-decoration: none;
+      color: #d1d1d1;
+      text-decoration: none;
     }
     a:hover {
-      color:gray;
+      color: gray;
     }
   }
 }
@@ -183,8 +263,6 @@ body {
   justify-content: flex-start;
   flex-direction: column;
 }
-
-
 
 @media (max-width: 1300px) {
   .Demo {

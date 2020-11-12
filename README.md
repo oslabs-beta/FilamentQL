@@ -3,14 +3,17 @@
 ## FilamentQL
 
 [FilamentQL](https://github.com/oslabs-beta/FilamentQL) is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
-#### Server-Side Caching
+
+An interactive demo and detail information can be found at [filamentql.io](http://filamentql.io/)
+
+### Server-Side Caching
 
 On the server-side, FilamentQL provides a GraphQL endpoint for your Express server with user-defined type definitions and resolvers, and creates a caching layer via a local Redis instance. When a client makes a request, FilamentQL checks the Redis cache for any previously stored data that matches the request. Through a parsing algorithm, FilamentQL then takes the incoming query and identifies any dissimilarities, and makes a subsequent query for just those dissimilarities to the database. Whenever possible, FilamentQL merges data coming back from the database with data from Redis cache and sends it back to the client:
 
 <p align="center"><img src="./server-diagram.png" width='750' height='650' style="margin-top: 5px; margin-bottom: 10px;"></p>
 
 
-#### Client-Side Caching
+### Client-Side Caching
 
 On the client-side, FilamentQL behaves similarly. For its local cache implementation, FilamentQL utilizes session storage, a built-in property on the browser's window object, which allows data to persist throughout page refreshes.
 
@@ -21,20 +24,10 @@ On the client-side, FilamentQL behaves similarly. For its local cache implementa
 FilamentQL also supports an offline mode. If the user gets disconnected from the server, all mutations made when the internet is down will be stored in a queue. At a set interval, FilamentQL checks if the network is back online. Whenever the user is back online, FilamentQL dequeues and sends each mutation to the server. Subsequently, the data that comes back from server will update the state and re-render the frontend components. What the user experiences and sees on their end is a seamless re-syncing of information when they come back online.
 
  <p align="center"><img src="./offline-diagram.png" width='700' height='300' style="margin-top: 5px; margin-bottom: 5px;"></p>
- 
-### Contributors
-
-FilamentQL is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
-- [Andrew Lovato](https://github.com/andrew-lovato)
-- [Chan Choi](https://github.com/chanychoi93)
-- [Duy Nguyen](https://github.com/bobdeei)
-- [Nelson Wu](https://github.com/neljson)
-
-An interactive demo and detail information can be found at [filamentql.io](http://filamentql.io/)
 
 ## Installation
 
-### Redis
+### 1. Redis
 
 FilamentQL utilizes Redis for its server-side caching. If Redis is not already installed on your machine:
 
@@ -50,7 +43,7 @@ FilamentQL utilizes Redis for its server-side caching. If Redis is not already i
   - By default redis server runs on `localhost:6379`
   - To check if your redis server is working: send a ping to the redis server by entering the command `redis-cli ping`, you will get a `PONG` in response if your redis server is working properly.
 
-### FilamentQL
+### 2. FilamentQL
 Check out our [npm package](https://www.npmjs.com/package/filamentql)
 
 `npm install filamentql`
@@ -174,6 +167,14 @@ app.use(
 app.listen(PORT, () => console.log(`GraphQL server is on port: ${PORT}`));
 ```
 
-### Notes
+## Contributors
 
-- Currently, FilamentQL v1.0 can only cache and parse queries without arguments, variables, or directives
+FilamentQL is an open-source NPM package created in collaboration with [OS Labs](https://github.com/oslabs-beta/) and developed by
+- [Andrew Lovato](https://github.com/andrew-lovato)
+- [Chan Choi](https://github.com/chanychoi93)
+- [Duy Nguyen](https://github.com/bobdeei)
+- [Nelson Wu](https://github.com/neljson)
+
+## Notes
+
+- Currently, FilamentQL v1.0 can only cache and parse queries without arguments, variables, or directives and do not support caching for mutation.

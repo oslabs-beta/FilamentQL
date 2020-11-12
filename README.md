@@ -2,7 +2,7 @@
 
 ## FilamentQL
 
-FilamentQL is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
+[FilamentQL](https://github.com/oslabs-beta/FilamentQL) is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
 #### Server-Side Caching
 
 On the server-side, FilamentQL provides a GraphQL endpoint for your Express server with user-defined type definitions and resolvers, and creates a caching layer via a local Redis instance. When a client makes a request, FilamentQL checks the Redis cache for any previously stored data that matches the request. Through a parsing algorithm, FilamentQL then takes the incoming query and identifies any dissimilarities, and makes a subsequent query for just those dissimilarities to the database. Whenever possible, FilamentQL merges data coming back from the database with data from Redis cache and sends it back to the client:
@@ -51,6 +51,8 @@ FilamentQL utilizes Redis for its server-side caching. If Redis is not already i
   - To check if your redis server is working: send a ping to the redis server by entering the command `redis-cli ping`, you will get a `PONG` in response if your redis server is working properly.
 
 ### FilamentQL
+Check out our [npm package](https://www.npmjs.com/package/filamentql)
+
 `npm install filamentql`
 
 ## Instructions

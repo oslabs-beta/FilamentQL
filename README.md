@@ -2,9 +2,9 @@
 
 ## FilamentQL
 
-[FilamentQL](https://github.com/oslabs-beta/FilamentQL) is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
+FilamentQL is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
 
-An interactive demo and detail information can be found at [filamentql.io](http://filamentql.io/)
+FilamentQL's npm package can be [downloaded here](https://www.npmjs.com/package/filamentql)
 
 ### Server-Side Caching
 
@@ -174,6 +174,8 @@ FilamentQL is an open-source NPM package created in collaboration with [OS Labs]
 - [Chan Choi](https://github.com/chanychoi93)
 - [Duy Nguyen](https://github.com/bobdeei)
 - [Nelson Wu](https://github.com/neljson)
+
+More infomation about FilamentQL can be found at [filamentql.io](http://filamentql.io/)
 
 ## Notes
 

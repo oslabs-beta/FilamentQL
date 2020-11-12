@@ -8,14 +8,14 @@ FilamentQL is an easy and practical library that supports client-side and server
 
 On the server-side, FilamentQL provides a GraphQL endpoint for your Express server with user-defined type definitions and resolvers, and creates a caching layer via a local Redis instance. When a client makes a request, FilamentQL checks the Redis cache for any previously stored data that matches the request. Through a parsing algorithm, FilamentQL then takes the incoming query and identifies any dissimilarities, and makes a subsequent query for just those dissimilarities to the database. Whenever possible, FilamentQL merges data coming back from the database with data from Redis cache and sends it back to the client:
 
-<p align="center"><img src="./server-diagram.png" width='800' height='650' style="margin-top: 5px; margin-bottom: 10px;"></p>
+<p align="center"><img src="./server-diagram.png" width='750' height='650' style="margin-top: 5px; margin-bottom: 10px;"></p>
 
 
 #### Client-Side Caching
 
 On the client-side, FilamentQL behaves similarly. For its local cache implementation, FilamentQL utilizes session storage, a built-in property on the browser's window object, which allows data to persist throughout page refreshes.
 
-<p align="center"><img src="./client-diagram.png" width='800' height='600' style="margin-top: 5px; margin-bottom: 5px;"></p>
+<p align="center"><img src="./client-diagram.png" width='750' height='650' style="margin-top: 5px; margin-bottom: 5px;"></p>
 
 ### Offline Mode
 

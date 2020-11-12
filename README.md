@@ -2,8 +2,7 @@
 
 ## FilamentQL
 
-FilamentQL is an easy and practical library that supports client-side and server-side caching as well as offline mutations for GraphQL, utilzing a parsing algorithm to detect differences between incoming queries and existing data stored within the cache.
-
+FilamentQL is a lightweight caching library for GraphQL queries that utilizes a parsing algorithm to detect differences between incoming queries and existing data stored within the cache. The library offers tools for both client and server side caching as well as tools for offline mode.
 #### Server-Side Caching
 
 On the server-side, FilamentQL provides a GraphQL endpoint for your Express server with user-defined type definitions and resolvers, and creates a caching layer via a local Redis instance. When a client makes a request, FilamentQL checks the Redis cache for any previously stored data that matches the request. Through a parsing algorithm, FilamentQL then takes the incoming query and identifies any dissimilarities, and makes a subsequent query for just those dissimilarities to the database. Whenever possible, FilamentQL merges data coming back from the database with data from Redis cache and sends it back to the client:
